@@ -8,5 +8,9 @@ Development of SBOM on SCION
 - 16 GB of RAM.
 
 ## Requirements
-` sudo apt update
+```
+sudo apt update
+sudo apt upgrade
+
+```
 
