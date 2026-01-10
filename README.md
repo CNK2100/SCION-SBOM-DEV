@@ -23,6 +23,7 @@ sudo apt-get install -y graphviz
 sudo apt install golang-go
 go version
 sudo apt install default-jdk
+sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
 sudo apt install locate
 updatedb
 ```
@@ -104,6 +105,12 @@ make   ### Initial make command will take up 5 to 10 minutes depending of your c
 
 ### SCION instalation verification
 Verify Scion installation (Optional: You can go directly to Running Scion section.)
+During the make test, if you get an error run again make test
+You will get the final error:
+//private/underlay/ebpf:portfilter_test  FAILED
+Executed 2 out of 135 tests: 134 tests pass and 1 fails locally.
+
+
 ```
 make test
 make test-integration
