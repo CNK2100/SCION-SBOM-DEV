@@ -132,6 +132,8 @@ Try install
 sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
 
 ```
+make test-integration result : Executed 3 out of 24 tests: 21 tests pass and 3 fail locally.
+ 
 
 ```
 //tools/cryptoplayground:trc_ceremony_test                      (cached) PASSED in 7.1s
