@@ -47,18 +47,19 @@ newgrp docker
 groups
 ```
 Close the terminal and open it again
-Groups  // verify if your username is in docker or restart your computer to take effect.
+##verify if your username is in docker or restart your computer to take effect.
 If not add again below commands
 
 ```
-sudo usermod -aG docker #YourUsername
+sudo usermod -aG docker YourUsername
 newgrp docker
 groups
 ```
 Running initial docker instance
 ```
 sudo systemctl status docker
-docker run hello-world     ## wait for docker to download the hello prg
+##wait for docker to download the hello prg
+docker run hello-world     
 ```
 
 ### Installation of Bazel
@@ -91,7 +92,8 @@ git clone https://github.com/scionproto/scion
 cd scion
 ./tools/install_bazel
 ./tools/install_deps
-groups  ### Verify again if your username is included in Docker group
+### Verify again if your username is included in Docker group
+groups  
 ./scion.sh bazel-remote ## wait for image to build
 make
 ```
@@ -99,7 +101,8 @@ If you get this error: The project you're trying to build requires Bazel 8.1.1
 Then install the correct Bazel version
 ```
 sudo apt update && sudo apt install bazel-8.1.1
-make   ### Initial make command will take up 5 to 10 minutes depending of your cpu & RAM specs.
+### Initial make command will take up 5 to 10 minutes depending of your cpu & RAM specs.
+make   
 ```
 
 ### SCION instalation verification
