@@ -23,7 +23,6 @@ sudo apt-get install -y graphviz
 sudo apt install golang-go
 go version
 sudo apt install default-jdk
-sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
 sudo apt install locate
 updatedb
 ```
@@ -114,6 +113,39 @@ Executed 2 out of 135 tests: 134 tests pass and 1 fails locally.
 ```
 make test
 make test-integration
+```
+Errors. Just continue to Running SCION
+
+Error with make test
+```
+//tools/pktgen/cmd/pktgen:go_default_test                       (cached) PASSED in 0.1s
+//private/underlay/ebpf:portfilter_test                                  FAILED in 0.0s
+  bazel-testlogs/private/underlay/ebpf/portfilter_test/test.log
+
+Executed 1 out of 135 tests: 134 tests pass and 1 fails locally.
+There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
+make: *** [Makefile:60: test] Error 3
+
+```
+Try install
+```
+sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
+
+```
+
+```
+//tools/cryptoplayground:trc_ceremony_test                      (cached) PASSED in 7.1s
+//acceptance/router_benchmark:test                                       FAILED in 1.9s
+  bazel-testlogs/acceptance/router_benchmark/test/test.log
+//acceptance/router_multi:test_bfd                                       FAILED in 1.0s
+  bazel-testlogs/acceptance/router_multi/test_bfd/test.log
+//acceptance/router_multi:test_nobfd                                     FAILED in 1.1s
+  bazel-testlogs/acceptance/router_multi/test_nobfd/test.log
+
+Executed 3 out of 24 tests: 21 tests pass and 3 fail locally.
+There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
+make: *** [Makefile:63: test-integration] Error 3
+
 ```
 
 ### Running SCION
