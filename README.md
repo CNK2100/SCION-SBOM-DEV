@@ -19,14 +19,15 @@ sudo apt upgrade
 
 ```
 sudo apt install wget
-sudo apt-get install -y graphviz
 sudo apt install golang-go
 go version
 sudo apt install default-jdk
 sudo apt install locate
 updatedb
-pip install pyyaml toml plumbum graphviz
+sudo apt-get install -y graphviz
 sudo apt-get install -y graphviz python3-graphviz
+pip install pyyaml toml plumbum graphviz
+## Below are SCION Quantum requirements. Install them as well
 sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
 sudo apt-get install -y supervisor
 
