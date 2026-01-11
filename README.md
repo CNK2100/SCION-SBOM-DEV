@@ -88,6 +88,7 @@ Stop all docker containers:
 ```
 docker ps
 docker stop $(docker ps -a -q)
+  sudo apt update && sudo apt install bazel-6.4.0
 
 ```
 Install SCION 
@@ -331,6 +332,20 @@ Stop SCION and all docker containers:
 docker ps
 docker stop $(docker ps -a -q)
 ```
+Verify if your username is in docker group.
+If not, add your usernam in docker group.
+
+```
+groups
+sudo usermod -aG docker YourUsername
+newgrp docker
+groups
+```
+Clean the previous installation
+```
+make clean
+bazel clean
+```
 
 ```
 cd ~
@@ -345,10 +360,6 @@ cd quantum
 
 ./tools/install_deps
 
-## verifiy if your username is in docker group
-
-groups
-
 ./scion.sh bazel-remote
 
 make
@@ -356,18 +367,76 @@ make
 ## If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin.
 
 sudo apt update && sudo apt install bazel-6.4.0
-## Make command it will run for about 4 to 8 minutes depending on your PC specs.
+
+## Make command will run for about 3 to 8 minutes depending on your PC specs.
+
 make
 
+## Make test command will run for about 3 to 8 minutes depending on your PC specs.
+## It will execute 135 out of 135 tests: 135 tests pass.
+
+make test
+
+## Make test-integration command will run for about 3 to 8 minutes depending on your PC specs.
+## It may fail to download the openwrt package depending on your network firewal config and speed.
+## Then just move to next step.
+
+make test-integration
+
+## Execution #1: Executed 1 out of 17 tests: 1 test passes, 1 fails to build and 15 were skipped.
+## Run again  make test-integration
+## issue with OpenWrt packaging test
+## Run acceptance tests only (skip OpenWrt packaging tests)
+bazel test //acceptance/...
+## Solution: Clean Bazel Cache
+# Option 1: Clean build outputs (keeps cache)
+bazel clean
+
+# Option 2: Full clean (removes all build outputs and cache)
+bazel clean --expunge
+
+# Option 3: Nuclear option - remove entire Bazel directory
+rm -rf ~/.cache/bazel
+
+```
+
+Development workflow:
+
+make - build after code changes
+make test - quick validation
+make test-integration - comprehensive testing before commits (optional)
+
+The integration tests simulate real SCION network scenarios, which is why they take much longer and require more setup (like the OpenWrt toolchain that caused your error).
 
 
+## Running SCION Quantum
 
+Continue with the installation and run below. If you exit the terminal or restart your installation then run the installation command for creating a docker container:
+```
+cd ~
+cd quantum
+./tools/install_bazel
+./tools/install_deps
+./scion.sh bazel-remote
+make
+```
+Then proceed with running SCION Quantum
 
+```
+## Locate in quantum folder if not already.
+cd ~
+cd quantum
+make docker-images
+## Run Scion topology
+./scion.sh topology -c topology/tiny4.topo 
+./scion.sh run
+bin/end2end_integration
+bin/scion showpaths --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
 
-
-
-
-
+```
+Stop Scion
+```
+./scion.sh stop
 ```
 
 
