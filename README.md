@@ -36,7 +36,11 @@ sudo apt install apt-transport-https ca-certificates curl software-properties-co
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/owner@owner:~/quantum$ ./scion.sh bazel-remote
+WARN[0000] /home/owner/quantum/bazel-remote.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+WARN[0000] No services to build                         
+[+] up 1/1
+ ✔ Container bazel-remote-cache Running   ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt update
 apt-cache policy docker-ce
@@ -361,7 +365,17 @@ cd quantum
 ./tools/install_deps
 
 ./scion.sh bazel-remote
+```
+If you see no container running, try again all  above command and you should see below output:
+```
+owner@owner:~/quantum$ ./scion.sh bazel-remote
+WARN[0000] /home/owner/quantum/bazel-remote.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+WARN[0000] No services to build                         
+[+] up 1/1
+ ✔ Container bazel-remote-cache Running
+``` 
 
+```
 make
 
 ## If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin.
