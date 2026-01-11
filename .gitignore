@@ -30,3 +30,136 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+## ADDITIONAL SCION STUFF TO BE  CHECKED AND CONFIRM
+# Bazel build outputs
+bazel-*
+/bazel-bin/
+/bazel-out/
+/bazel-testlogs/
+/bazel-quantum/
+
+# Make build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.test
+/bin/
+/pkg/
+/build/
+
+# SCION generated files
+gen/
+gen-cache/
+gen-certs/
+/logs/
+/traces/
+*.log
+
+# Topology generated files
+topology/*.json
+topology/ISD*/
+topology/gen/
+topology/certs/
+topology/keys/
+topology/AS*/
+!topology/*.topo
+
+# Test outputs
+test-results/
+test-logs/
+coverage.out
+coverage.html
+*.test.out
+*.test.log
+
+# Integration test artifacts
+/acceptance/
+/integration/
+*.pcap
+*.pcapng
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+*.egg-info/
+dist/
+.eggs/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+vendor/
+go.work
+go.work.sum
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Operating System
+Thumbs.db
+.DS_Store
+._*
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+tmp/
+temp/
+
+# SCION specific runtime
+/run/
+/state/
+/cache/
+sciond.sock
+dispatcher.sock
+*.sock
+
+# Certificates and keys (except examples)
+*.key
+*.crt
+*.pem
+*.p12
+!topology/example.key
+!topology/example.crt
+
+# Configuration backups
+*.conf.bak
+*.toml.bak
+*.json.bak
+
+# Documentation builds
+/docs/_build/
+/docs/.buildinfo
+
+# Local environment settings
+.env
+.env.local
+*.local
+
+# Keep empty directories
+!.gitkeep
