@@ -218,6 +218,12 @@ python3 tools/topodot.py -s topology/default.topo
 ## SCION QUANTUM INSTALLATION
 ### Requirements
 Install all above SCION depencies if not installed and proceed.
+```
+sudo apt-get update
+sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
+sudo apt-get install -y supervisor
+
+```
 
 Stop all current SCION and docker containers: 
 ```
@@ -225,13 +231,7 @@ Stop all current SCION and docker containers:
 docker ps
 docker stop $(docker ps -a -q)
 ```
-Install build dependencies
-```
-sudo apt-get update
-sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
-sudo apt-get install -y supervisor
 
-```
 ### Install liboqs and liboqs-go used on SCION quantum
 
 Build and install liboqs
@@ -348,10 +348,12 @@ sudo usermod -aG docker YourUsername
 newgrp docker
 groups
 ```
-Clean the previous installation
+Optional: You may clean the previous installation if you encourter errors
 ```
 make clean
 bazel clean
+## Not recommanded : remove entire Bazel directory
+rm -rf ~/.cache/bazel
 ```
 
 ```
@@ -363,7 +365,7 @@ cd quantum
 
 ./tools/install_bazel
 
-### install SCION Quantum extra dependencies: plumbum-1.6.9 pyyaml-6.0.1 setuptools-69.1.0 six-1.15.0 supervisor-4.2.5 supervisor-wildcards-0.1.3
+### Install SCION Quantum extra dependencies: plumbum-1.6.9 pyyaml-6.0.1 setuptools-69.1.0 six-1.15.0 supervisor-4.2.5 supervisor-wildcards-0.1.3
 
 ./tools/install_deps
 
@@ -378,9 +380,12 @@ WARN[0000] No services to build
  ✔ Container bazel-remote-cache Running
 ``` 
 
-```
-make
 
+Check SCION documentation to build all the package or only SCION services.
+
+https://docs.scion.org/en/latest/dev/build.html
+
+```
 ## If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin.
 
 sudo apt update && sudo apt install bazel-6.4.0
@@ -395,7 +400,8 @@ make - build after code changes
 make test - quick validation
 make test-integration - comprehensive testing before commits (optional)
 
-The integration tests simulate real SCION network scenarios, which is why they take much longer and require more setup (like the OpenWrt toolchain that may cause error).
+The integration tests simulate real SCION network scenarios,
+which is why they take much longer and require more setup (like the OpenWrt that may cause error).
 ```
 
 
@@ -415,18 +421,9 @@ make test-integration
 
 ## Execution #1: Executed 1 out of 17 tests: 1 test passes, 1 fails to build and 15 were skipped.
 ## Run again  make test-integration
-## issue with OpenWrt packaging test
-## Run acceptance tests only (skip OpenWrt packaging tests)
-bazel test //acceptance/...
-## Solution: Clean Bazel Cache
-# Option 1: Clean build outputs (keeps cache)
-bazel clean
+## issue with OpenWrt that needs to be download. You can add it manually in Bazel cache and run again the test
+##
 
-# Option 2: Full clean (removes all build outputs and cache)
-bazel clean --expunge
-
-# Option 3: Nuclear option - remove entire Bazel directory
-rm -rf ~/.cache/bazel
 
 ```
 
