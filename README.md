@@ -453,6 +453,29 @@ make docker-images
 ./scion.sh run
 bin/end2end_integration
 bin/scion showpaths --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
+```
+If you want to see extended details just add --extended
+
+```
+bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
+
+```
+Output
+```
+bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
+Available paths to 1-ff00:0:110
+2 Hops:
+[0] Hops: [1-ff00:0:112 ~~ 1>2 1-ff00:0:110 ~~]
+    MTU: 1400
+    NextHop: 127.0.0.25:31012
+    PQC-secured: true
+    Expires: 2026-01-11 13:45:00 +0000 UTC (5h59m21s)
+    SupportsEPIC: false
+    Status: alive
+    LocalIP: 127.0.0.1
+owner@owner:~/quantum$ 
+
+
 
 ```
 Stop Scion
