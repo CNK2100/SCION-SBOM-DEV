@@ -25,6 +25,9 @@ go version
 sudo apt install default-jdk
 sudo apt install locate
 updatedb
+pip install pyyaml toml plumbum graphviz
+sudo apt-get install -y graphviz python3-graphviz
+
 ```
 ### Installation of Docker
 ```
@@ -94,7 +97,8 @@ cd scion
 ./tools/install_deps
 ### Verify again if your username is included in Docker group
 groups  
-./scion.sh bazel-remote ## wait for image to build
+./scion.sh bazel-remote
+## wait for image to build
 make
 ```
 If you get this error: The project you're trying to build requires Bazel 8.1.1
@@ -169,6 +173,34 @@ bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:1
 
 ```
 
+### Generate an image of any SCION topology located in /topology/ folder
+Install requirements
+```
+pip install pyyaml toml plumbum graphviz
+sudo apt-get install -y graphviz python3-graphviz
+```
+Generate the topology image
+```
+./scion.sh topodot -s topology/tiny.topo
+./scion.sh topodot -s topology/tiny4.topo
+./scion.sh topodot -s topology/wide.topo
+./scion.sh topodot -s topology/default.topo
+./scion.sh topodot -s topology/default-no-peers.topo
+
+
+
+```
+If you get the error, the issue could be Bazel Python path, not pip.
+Then Run this instead:
+
+```
+python3 tools/topodot.py -s topology/tiny4.topo
+python3 tools/topodot.py -s topology/wide.topo
+python3 tools/topodot.py -s topology/tiny.topo
+python3 tools/topodot.py -s topology/default-no-peers.topo
+python3 tools/topodot.py -s topology/default.topo
+```
+
 ### Stop SCION
 ```
 ./scion.sh stop
@@ -180,7 +212,17 @@ bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:1
 ### Requirements
 Install all above SCION depencies if not installed and proceed.
 
+Stop all current SCION and docker containers: 
 ```
+./scion.sh stop
+docker ps
+docker stop $(docker ps -a -q)
+```
+### Installing SCION QUANTUM
+
+```
+cd ~
+git clone https://github.com/juagargi/quantum.git
 
 ```
 
