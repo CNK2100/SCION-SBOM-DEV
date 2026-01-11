@@ -485,6 +485,7 @@ Then proceed with running SCION Quantum
 cd ~
 cd quantum
 make docker-images
+## if make docker-images does not run then run first ./scion.sh bazel-remote and then make docker-images
 ## Run Scion topology
 ./scion.sh topology -c topology/tiny4.topo 
 ./scion.sh run
