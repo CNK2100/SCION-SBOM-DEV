@@ -296,6 +296,8 @@ cd liboqs-go
 Create pkg-config file
 ```
 sudo mkdir -p /usr/local/lib/pkgconfig
+```
+```
 sudo tee /usr/local/lib/pkgconfig/liboqs-go.pc > /dev/null << 'EOF'
 prefix=/usr/local
 exec_prefix=${prefix}
