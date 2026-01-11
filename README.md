@@ -9,6 +9,16 @@ Development of SBOM on SCION
 
 ## Ubuntu 22.04 update
 ```
+owner@owner:~/quantum$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 22.04.5 LTS
+Release:	22.04
+Codename:	jammy
+owner@owner:~/quantum$ 
+```
+Update & upgrade
+```
 sudo apt update
 sudo apt upgrade
 
