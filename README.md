@@ -27,6 +27,11 @@ updatedb
 sudo apt-get install -y graphviz
 sudo apt-get install -y graphviz python3-graphviz
 pip install pyyaml toml plumbum graphviz
+## verify if all below are installed
+sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r)
+## install bpftool for make test-integration verification
+sudo apt install -y linux-tools-common linux-tools-$(uname -r)
+bpftool version
 ## Below are SCION Quantum requirements. Install them as well
 sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
 sudo apt-get install -y supervisor
