@@ -75,6 +75,7 @@ sudo apt-get install docker-compose-plugin
 sudo systemctl status docker
 sudo apt-get update
 sudo groupadd docker
+# Add your user to docker group
 sudo usermod -aG docker $USER
 sudo usermod -aG docker #YourUsername
 newgrp docker
