@@ -78,6 +78,9 @@ sudo groupadd docker
 # Add your user to docker group
 sudo usermod -aG docker $USER
 sudo usermod -aG docker #YourUsername
+# Verify it's added to system
+getent group docker
+## Update the configuration
 newgrp docker
 groups
 ```
