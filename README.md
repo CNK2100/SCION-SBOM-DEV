@@ -240,8 +240,8 @@ sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-bu
 sudo apt-get install -y supervisor
 
 ```
-Install Docker (see above installation details)
-Install Bazel (see above installation details)
+- Install Docker (see above installation details)
+- Install Bazel (see above installation details)
 
 Stop all current SCION and docker containers: 
 ```
