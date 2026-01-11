@@ -18,20 +18,29 @@ sudo apt upgrade
 ### Requirements
 
 ```
+sudo apt update
+sudo apt upgrade
+
 sudo apt install wget
 sudo apt install golang-go
 go version
+
 sudo apt install default-jdk
 sudo apt install locate
 updatedb
+
 sudo apt-get install -y graphviz
 sudo apt-get install -y graphviz python3-graphviz
 pip install pyyaml toml plumbum graphviz
+
 ## verify if all below are installed
 sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r)
+
 ## install bpftool for make test-integration verification
+sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
 sudo apt install -y linux-tools-common linux-tools-$(uname -r)
 bpftool version
+
 ## Below are SCION Quantum requirements. Install them as well
 sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
 sudo apt-get install -y supervisor
@@ -225,12 +234,17 @@ python3 tools/topodot.py -s topology/default.topo
 ### Requirements
 Install all above SCION depencies if not installed and proceed.
 ```
+sudo apt update
+sudo apt upgrade
+
 sudo apt install wget
 sudo apt install golang-go
 go version
+
 sudo apt install default-jdk
 sudo apt install locate
 updatedb
+
 sudo apt-get install -y graphviz
 sudo apt-get install -y graphviz python3-graphviz
 pip install pyyaml toml plumbum graphviz
@@ -239,6 +253,7 @@ pip install pyyaml toml plumbum graphviz
 sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r)
 
 ## install bpftool for make test-integration verification
+sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
 sudo apt install -y linux-tools-common linux-tools-$(uname -r)
 bpftool version
 
