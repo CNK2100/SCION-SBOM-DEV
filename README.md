@@ -219,11 +219,26 @@ python3 tools/topodot.py -s topology/default.topo
 ### Requirements
 Install all above SCION depencies if not installed and proceed.
 ```
-sudo apt-get update
+sudo apt update
+sudo apt upgrade
+
+sudo apt install wget
+sudo apt-get install -y graphviz
+sudo apt install golang-go
+go version
+sudo apt install default-jdk
+sudo apt install locate
+updatedb
+pip install pyyaml toml plumbum graphviz
+sudo apt-get install -y graphviz python3-graphviz
+
+## SCION Quantum requirement
 sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
 sudo apt-get install -y supervisor
 
 ```
+Install Docker (see above installation details)
+Install Bazel (see above installation details)
 
 Stop all current SCION and docker containers: 
 ```
@@ -427,9 +442,6 @@ make test-integration
 
 ```
 
-
-
-
 ## Running SCION Quantum
 
 Continue with the installation and run below. If you exit the terminal or restart your installation then run the installation command for creating a docker container:
@@ -474,8 +486,22 @@ Available paths to 1-ff00:0:110
     Status: alive
     LocalIP: 127.0.0.1
 owner@owner:~/quantum$ 
-
-
+```
+### Generate an image of any SCION topology located in /topology/ folder
+Install requirements
+```
+pip install pyyaml toml plumbum graphviz
+sudo apt-get install -y graphviz python3-graphviz
+```
+Generate the topology image
+```
+./scion.sh topodot -s topology/peering-test.topo
+./scion.sh topodot -s topology/peering-test-multi.topo
+./scion.sh topodot -s topology/tiny.topo
+./scion.sh topodot -s topology/tiny4.topo
+./scion.sh topodot -s topology/wide.topo
+./scion.sh topodot -s topology/default.topo
+./scion.sh topodot -s topology/default-no-peers.topo
 
 ```
 Stop Scion
