@@ -28,6 +28,7 @@ updatedb
 pip install pyyaml toml plumbum graphviz
 sudo apt-get install -y graphviz python3-graphviz
 sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
+sudo apt-get install -y supervisor
 
 ```
 ### Installation of Docker
@@ -228,6 +229,8 @@ Install build dependencies
 ```
 sudo apt-get update
 sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
+sudo apt-get install -y supervisor
+
 ```
 ### Install liboqs and liboqs-go used on SCION quantum
 
@@ -385,12 +388,25 @@ sudo apt update && sudo apt install bazel-6.4.0
 ## Make command will run for about 3 to 8 minutes depending on your PC specs.
 
 make
+```
+Development workflow:
+```
+make - build after code changes
+make test - quick validation
+make test-integration - comprehensive testing before commits (optional)
 
+The integration tests simulate real SCION network scenarios, which is why they take much longer and require more setup (like the OpenWrt toolchain that may cause error).
+```
+
+
+```
 ## Make test command will run for about 3 to 8 minutes depending on your PC specs.
 ## It will execute 135 out of 135 tests: 135 tests pass.
 
 make test
-
+```
+Make test-integration (optional)
+```
 ## Make test-integration command will run for about 3 to 8 minutes depending on your PC specs.
 ## It may fail to download the openwrt package depending on your network firewal config and speed.
 ## Then just move to next step.
@@ -414,13 +430,7 @@ rm -rf ~/.cache/bazel
 
 ```
 
-Development workflow:
 
-make - build after code changes
-make test - quick validation
-make test-integration - comprehensive testing before commits (optional)
-
-The integration tests simulate real SCION network scenarios, which is why they take much longer and require more setup (like the OpenWrt toolchain that caused your error).
 
 
 ## Running SCION Quantum
