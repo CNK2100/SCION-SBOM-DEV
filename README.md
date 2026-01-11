@@ -292,8 +292,9 @@ rm -rf liboqs-go
 # Clone repository
 git clone --depth 1 https://github.com/open-quantum-safe/liboqs-go.git
 cd liboqs-go
-
-# Create pkg-config file
+```
+Create pkg-config file
+```
 sudo mkdir -p /usr/local/lib/pkgconfig
 sudo tee /usr/local/lib/pkgconfig/liboqs-go.pc > /dev/null << 'EOF'
 prefix=/usr/local
@@ -308,8 +309,10 @@ Requires: liboqs
 Cflags: -I${includedir}
 Libs: -L${libdir} -loqs
 EOF
+```
 
-## verify the last command input
+verify the last command input
+```
 nano /usr/local/lib/pkgconfig/liboqs-go.pc 
 ## exit nano
 ctrl+x
