@@ -429,11 +429,14 @@ https://docs.scion.org/en/latest/dev/build.html
 ## If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin.
 
 sudo apt update && sudo apt install bazel-6.4.0
-
-## Make command will run for about 3 to 8 minutes depending on your PC specs.
-
-make
 ```
+Make command will run for about 3 to 8 minutes depending on your PC specs.
+```
+make
+make test
+make test-integration
+```
+
 Development workflow:
 ```
 make - build after code changes
@@ -462,8 +465,6 @@ make test-integration
 ## Execution #1: Executed 1 out of 17 tests: 1 test passes, 1 fails to build and 15 were skipped.
 ## Run again  make test-integration
 ## issue with OpenWrt that needs to be download. You can add it manually in Bazel cache and run again the test
-##
-
 
 ```
 
