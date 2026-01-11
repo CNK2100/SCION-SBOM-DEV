@@ -27,6 +27,7 @@ sudo apt install locate
 updatedb
 pip install pyyaml toml plumbum graphviz
 sudo apt-get install -y graphviz python3-graphviz
+sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
 
 ```
 ### Installation of Docker
@@ -218,13 +219,157 @@ Stop all current SCION and docker containers:
 docker ps
 docker stop $(docker ps -a -q)
 ```
+Install build dependencies
+```
+sudo apt-get update
+sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
+```
+### Install liboqs and liboqs-go used on SCION quantum
+
+Build and install liboqs
+
+```
+cd /tmp
+# Clean up if exists
+rm -rf liboqs  
+
+# Clone repository
+git clone --depth 1 --branch main https://github.com/open-quantum-safe/liboqs.git
+cd liboqs
+
+# Configure
+mkdir -p build && cd build
+
+cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_SHARED_LIBS=ON ..
+
+# Compile (takes 2-8 minutes)
+ninja
+
+# Install
+sudo ninja install
+sudo ldconfig
+
+```
+Verify liboqs
+```
+# Check installation
+ldconfig -p | grep liboqs
+pkg-config --modversion liboqs
+```
+Set up liboqs-go
+
+```
+cd /tmp
+# Clean up if exists
+rm -rf liboqs-go  
+
+# Clone repository
+git clone --depth 1 https://github.com/open-quantum-safe/liboqs-go.git
+cd liboqs-go
+
+# Create pkg-config file
+sudo mkdir -p /usr/local/lib/pkgconfig
+sudo tee /usr/local/lib/pkgconfig/liboqs-go.pc > /dev/null << 'EOF'
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: liboqs-go
+Description: Go bindings for liboqs
+Version: 1.0.0
+Requires: liboqs
+Cflags: -I${includedir}
+Libs: -L${libdir} -loqs
+EOF
+
+## verify the last command input
+nano /usr/local/lib/pkgconfig/liboqs-go.pc 
+## exit nano
+ctrl+x
+```
+Update environment
+```
+# Add to ~/.bashrc
+echo '' >> ~/.bashrc
+echo '# liboqs and liboqs-go pkg-config path' >> ~/.bashrc
+echo 'export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"' >> ~/.bashrc
+
+# Reload
+source ~/.bashrc
+```
+Final verification
+```
+pkg-config --modversion liboqs
+pkg-config --cflags liboqs-go
+ldconfig -p | grep liboqs
+
+## output
+owner@owner:~$ pkg-config --modversion liboqs
+0.15.0
+owner@owner:~$ pkg-config --cflags liboqs-go
+-I/usr/local/include
+owner@owner:~$ ldconfig -p | grep liboqs
+	liboqs.so.9 (libc6,x86-64) => /usr/local/lib/liboqs.so.9
+	liboqs.so (libc6,x86-64) => /usr/local/lib/liboqs.so
+owner@owner:~$ 
+
+
+```
+Clean up
+
+```
+cd /tmp
+rm -rf liboqs liboqs-go
+
+```
+
 ### Installing SCION QUANTUM
+Stop SCION and all docker containers: 
+```
+./scion.sh stop
+docker ps
+docker stop $(docker ps -a -q)
+```
 
 ```
 cd ~
+
 git clone https://github.com/juagargi/quantum.git
 
+cd quantum
+
+./tools/install_bazel
+
+### install SCION Quantum extra dependencies: plumbum-1.6.9 pyyaml-6.0.1 setuptools-69.1.0 six-1.15.0 supervisor-4.2.5 supervisor-wildcards-0.1.3
+
+./tools/install_deps
+
+## verifiy if your username is in docker group
+
+groups
+
+./scion.sh bazel-remote
+
+make
+
+## If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin.
+
+sudo apt update && sudo apt install bazel-6.4.0
+## Make command it will run for about 4 to 8 minutes depending on your PC specs.
+make
+
+
+
+
+
+
+
+
+
+
 ```
+
 
 
 
