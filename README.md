@@ -109,6 +109,7 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] h
 sudo apt update && sudo apt install bazel
 
 bazel --version
+sudo apt update && sudo apt install bazel-8.1.1
 
 ```
 
@@ -118,8 +119,6 @@ Stop all docker containers:
 ```
 docker ps
 docker stop $(docker ps -a -q)
-  sudo apt update && sudo apt install bazel-6.4.0
-
 ```
 Install SCION 
 ```
@@ -144,54 +143,26 @@ make
 ### SCION instalation verification
 Verify Scion installation (Optional: You can go directly to Running Scion section.)
 During the make test, if you get an error run again make test
-You will get the final error:
-//private/underlay/ebpf:portfilter_test  FAILED
-Executed 2 out of 135 tests: 134 tests pass and 1 fails locally.
 
+Test SCION
 
 ```
 make test
 make test-integration
 ```
-Errors. Just continue to Running SCION
+Errors. Just continue to Running SCION Section
 
-Error with make test
-```
-//tools/pktgen/cmd/pktgen:go_default_test                       (cached) PASSED in 0.1s
-//private/underlay/ebpf:portfilter_test                                  FAILED in 0.0s
-  bazel-testlogs/private/underlay/ebpf/portfilter_test/test.log
-
-Executed 1 out of 135 tests: 134 tests pass and 1 fails locally.
-There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
-make: *** [Makefile:60: test] Error 3
-
-```
-Try install
-```
-sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
-
-```
-make test-integration result : Executed 3 out of 24 tests: 21 tests pass and 3 fail locally.
- 
-
-```
-//tools/cryptoplayground:trc_ceremony_test                      (cached) PASSED in 7.1s
-//acceptance/router_benchmark:test                                       FAILED in 1.9s
-  bazel-testlogs/acceptance/router_benchmark/test/test.log
-//acceptance/router_multi:test_bfd                                       FAILED in 1.0s
-  bazel-testlogs/acceptance/router_multi/test_bfd/test.log
-//acceptance/router_multi:test_nobfd                                     FAILED in 1.1s
-  bazel-testlogs/acceptance/router_multi/test_nobfd/test.log
-
-Executed 3 out of 24 tests: 21 tests pass and 3 fail locally.
-There were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.
-make: *** [Makefile:63: test-integration] Error 3
-
-```
 
 ### Running SCION
 ```
 cd ~/scion
+```
+if you are running several SCION instances then do this:
+```
+./scion.sh bazel-remote
+```
+Continue to running SCION
+```
 make docker-images 
 ./scion.sh topology -c topology/tiny4.topo 
 ./scion.sh run
@@ -218,11 +189,8 @@ Generate the topology image
 ./scion.sh topodot -s topology/wide.topo
 ./scion.sh topodot -s topology/default.topo
 ./scion.sh topodot -s topology/default-no-peers.topo
-
-
-
 ```
-If you get the error, the issue could be Bazel Python path, not pip.
+If you get the error, the issue could be Bazel Python path.
 Then Run this instead:
 
 ```
