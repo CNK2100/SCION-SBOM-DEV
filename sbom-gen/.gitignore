@@ -106,3 +106,10 @@ logger.log
 
 # SBOM Generated files
 sbom.json
+grype-report.json
+grype-report.csv
+report.csv
+scion-config.json
+security-score.json
+security-score.txt
+
