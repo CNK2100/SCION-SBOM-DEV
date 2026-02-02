@@ -275,7 +275,9 @@ cd scion-sbom
 
 ./scion.sh bazel-remote
 ```
-If you see no container running, wait and try again and you should see below output:
+Wait for 3 sec and if you see no container running, then try again above command. 
+
+Below output is the output:
 ```
  ./scion.sh bazel-remote
 WARN[0000] /bazel-remote.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
@@ -285,11 +287,11 @@ WARN[0000] No services to build
 ``` 
 
 
-Check SCION documentation to build all the package or only needed SCION services.
+Check SCION documentation to either build all the packages or  build only needed SCION service.
 
 https://docs.scion.org/en/latest/dev/build.html
 
-If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin. Then install the correct version.
+If you get an error: e.g., "the project you're trying to build requires Bazel 6.4.0", but it wasn't found in /usr/bin. Then install the correct Bazel version 6.4.0.
 
 ```
 sudo apt update && sudo apt install bazel-6.4.0
@@ -297,10 +299,13 @@ sudo apt update && sudo apt install bazel-6.4.0
 Below "make" command will run for about 3 to 8 minutes depending on your PC specs.
 ```
 make
+
 make test
+
 # Option make test-integration. 
 # May get error due to the low-speed downloading of "OpenWrt".
 # Just move to the Running  SCION-SBOM Section.
+
 make test-integration
 ```
 
@@ -308,14 +313,19 @@ make test-integration
 
 
 ```
-## Locate in scion-sbom folder if not already.
+# Locate in scion-sbom folder if not already.
 cd ~
 cd scion-sbom
 make docker-images
-## if make docker-images does not run then run first ./scion.sh bazel-remote and then make docker-images
-## Run Scion topology
+
+## if make docker-images does not run then run first ./scion.sh bazel-remote.
+Then run again make docker-images
+
+## Run a desired Scion topology
+
 ./scion.sh topology -c topology/tiny4.topo 
 ./scion.sh run
+
 bin/end2end_integration
 bin/scion showpaths --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
 ```
