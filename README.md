@@ -1,11 +1,23 @@
 # SCION-SBOM-DEV
-Development of SBOM on SCION
+The implementation of RBOM into SCION infrastructure.
+The code is based on [the SCION implementation](https://github.com/netsec-ethz/scion).
+
+## Installation 
+
+Installation packages for Debian and derivatives are available for x86-64, arm64, x86-32 and arm.
+These packages can be found in the [latest release](https://github.com/scionproto/scion/releases/latest).
+Packages for in-development versions can be found from the [latest nightly build](https://buildkite.com/scionproto/scion-nightly/builds/latest).
+
+Alternatively, "naked" pre-built binaries are available for Linux x86-64 and
+can be downloaded from the [latest release](https://github.com/scionproto/scion/releases/latest) or the
+[latest nightly build](https://buildkite.com/scionproto/scion-nightly/builds/latest).
 
 ## Hardware details
 - OS: Installation on Ubuntu 22.04 Laptop.
 - CPU arch: AMD64. We did not tested on Arm cpu such as Apple Silicon.
 - CPU Hardware: Intel Core i7.
-- 16 GB of RAM.
+- RAM: 16 GB.
+- DISK: 256 GB
 
 ## Ubuntu 22.04 update
 ```
@@ -24,7 +36,7 @@ sudo apt upgrade
 
 ```
 
-## SCION INSTALLATION
+
 ### Requirements
 
 ```
@@ -39,24 +51,18 @@ sudo apt install default-jdk
 sudo apt install locate
 updatedb
 
-sudo apt-get install -y graphviz
 sudo apt-get install -y graphviz python3-graphviz
-pip install pyyaml toml plumbum graphviz
-
-## verify if all below are installed
+pip install pyyaml toml plumbum 
 sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r)
-
-## install bpftool for make test-integration verification
 sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
 sudo apt install -y linux-tools-common linux-tools-$(uname -r)
 bpftool version
 
-## Below are SCION Quantum requirements. Install them as well
 sudo apt-get install -y build-essential cmake git pkg-config libssl-dev ninja-build
 sudo apt-get install -y supervisor
 
 ```
-### Installation of Docker
+### Docker
 ```
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
 
@@ -76,13 +82,13 @@ sudo usermod -aG docker $USER
 sudo usermod -aG docker #YourUsername
 # Verify it's added to system
 getent group docker
-## Update the configuration
+# Update the configuration
 newgrp docker
 groups
 ```
-Close the terminal and open it again
-##verify if your username is in docker or restart your computer to take effect.
-If not add again below commands
+Close the terminal and open it again.
+Verify if your username is in docker.
+If not add again with below commands
 
 ```
 sudo usermod -aG docker YourUsername
@@ -92,11 +98,11 @@ groups
 Running initial docker instance
 ```
 sudo systemctl status docker
-##wait for docker to download the hello prg
+# Wait for docker to download the hello prg
 docker run hello-world     
 ```
 
-### Installation of Bazel
+### Bazel
 
 ```
 sudo apt install apt-transport-https curl gnupg -y
@@ -114,16 +120,7 @@ sudo apt update && sudo apt install bazel-8.1.1
 ```
 
 
-## SCION QUANTUM INSTALLATION
-
-Stop all current SCION and docker containers: 
-```
-./scion.sh stop
-docker ps
-docker stop $(docker ps -a -q)
-```
-
-### Install liboqs and liboqs-go used on SCION quantum
+### Install liboqs and liboqs-go
 
 Build and install liboqs
 
@@ -228,15 +225,19 @@ rm -rf liboqs liboqs-go
 
 ```
 
-### Installing SCION QUANTUM
-Stop SCION and all docker containers: 
+
+
+## SCION-SBOM 
+
+If you have existing SCION running, then stop all current SCION and docker containers; else move to Build.
 ```
 ./scion.sh stop
 docker ps
 docker stop $(docker ps -a -q)
 ```
+
 Verify if your username is in docker group.
-If not, add your usernam in docker group.
+If not, add your username in docker group.
 
 ```
 groups
@@ -244,17 +245,12 @@ sudo usermod -aG docker YourUsername
 newgrp docker
 groups
 ```
-Optional: You may clean the previous installation if you encourter errors
-```
-make clean
-bazel clean
-## Not recommanded : remove entire Bazel directory
-rm -rf ~/.cache/bazel
-```
+
 
 ```
 cd ~
 
+git clone https://github.com/CNK2100/SCION-SBOM-DEV
 git clone https://github.com/juagargi/quantum.git
 
 cd quantum
@@ -392,6 +388,14 @@ Stop Scion
 ./scion.sh stop
 ```
 
+### Troubleshooting
 
+Optional: You may clean the previous installation if you encourter errors
+```
+make clean
+bazel clean
+## Not recommanded : remove entire Bazel directory
+rm -rf ~/.cache/bazel
+```
 
 
