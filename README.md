@@ -1,4 +1,4 @@
-# SCION-SBOM-DEV
+# SCION-RBOM-DEV
 The implementation of RBOM into SCION infrastructure.
 The code is based on [the SCION implementation](https://github.com/netsec-ethz/scion).
 
@@ -12,7 +12,7 @@ Alternatively, "naked" pre-built binaries are available for Linux x86-64 and
 can be downloaded from the [latest release](https://github.com/scionproto/scion/releases/latest) or the
 [latest nightly build](https://buildkite.com/scionproto/scion-nightly/builds/latest).
 
-SCION-SBOM is implemented fom [SCION Quantum](https://github.com/juagargi/quantum.git).
+SCION-RBOM is implemented fom [SCION Quantum](https://github.com/juagargi/quantum.git).
 
 ## Hardware details
 - OS: Installation on Ubuntu 22.04 Laptop.
@@ -242,7 +242,7 @@ rm -rf liboqs liboqs-go
 
 
 
-## SCION-SBOM Installation and Running
+## SCION-RBOM Installation
 
 If you have existing SCION running, then stop all current SCION and docker containers; else move to Build.
 ```
@@ -324,7 +324,7 @@ make test
 make test-integration
 ```
 
-## Running SCION-SBOM
+## Running SCION-RBOM
 
 
 ```
