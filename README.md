@@ -269,16 +269,34 @@ cd ~
 git clone https://github.com/CNK2100/SCION-SBOM-DEV
 cd SCION-SBOM-DEV/
 cd scion-sbom
+```
+If you get an error: e.g., "the project you're trying to build requires Bazel 6.4.0", but it wasn't found in /usr/bin. Then install the correct Bazel version 6.4.0.
+```
 sudo apt update && sudo apt install bazel-6.4.0
 bazel version
 
 ./tools/install_bazel
+# If you get "Permission denied error" then do below
+chmod +x -R ./tools/
+
+./tools/install_bazel
+
 
 # Install extra dependencies: plumbum-1.6.9 pyyaml-6.0.1 setuptools-69.1.0 six-1.15.0 supervisor-4.2.5 supervisor-wildcards-0.1.3
 
 ./tools/install_deps
 
 ./scion.sh bazel-remote
+
+# If you get permission denied error. Verify first if your user is added in Docker group as of above.
+# If there is still error than do below
+cd ..
+chmod +x -R ./scion-sbom
+cd scion-sbom
+
+sudo ./scion.sh bazel-remote
+
+
 ```
 Wait for 3 sec and if you see no container running, then try again above command. 
 
@@ -291,23 +309,18 @@ WARN[0000] No services to build
  ✔ Container bazel-remote-cache Running
 ``` 
 
-
 Check SCION documentation to either build all the packages or  build only needed SCION service.
 
 https://docs.scion.org/en/latest/dev/build.html
 
-If you get an error: e.g., "the project you're trying to build requires Bazel 6.4.0", but it wasn't found in /usr/bin. Then install the correct Bazel version 6.4.0.
 
-```
-sudo apt update && sudo apt install bazel-6.4.0
-```
 Below "make" command will run for about 3 to 8 minutes depending on your PC specs.
 ```
 make
 
 make test
 
-# Option make test-integration. 
+# Optional make test-integration. 
 # May get error due to the low-speed downloading of "OpenWrt".
 # Just move to the Running  SCION-SBOM Section.
 
@@ -321,6 +334,9 @@ make test-integration
 # Locate in scion-sbom folder if not already.
 cd ~
 cd scion-sbom
+# Below initial command will take  2 to 5 min depending on your specs.
+# Next time it will run faster
+
 make docker-images
 
 ## if make docker-images does not run then run first ./scion.sh bazel-remote.
@@ -328,19 +344,21 @@ Then run again make docker-images
 
 ## Run a desired Scion topology
 
-./scion.sh topology -c topology/tiny4.topo 
+./scion.sh topology -c topology/sbom.topo 
 ./scion.sh run
-
+```
+Testing the SCION network
+```
 bin/end2end_integration
 bin/scion showpaths --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
 ```
-If you want to see extended details just add --extended
+If you want to see extended details for the command showpaths just add --extended
 
 ```
 bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
 
 ```
-Output
+Output with SBOM listed
 ```
 bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
 Available paths to 1-ff00:0:110
@@ -349,15 +367,35 @@ Available paths to 1-ff00:0:110
     MTU: 1400
     NextHop: 127.0.0.25:31012
     PQC-secured: true
-    Expires: 2026-01-11 13:45:00 +0000 UTC (5h59m21s)
+    Expires: 2026-02-02 19:38:09 +0000 UTC (5h59m21s)
+    Sbom: 3450
     SupportsEPIC: false
     Status: alive
     LocalIP: 127.0.0.1
  
 ```
+Testing the path from 112 to another AS 1-ff00:0:111 with different.
+SBOM values will update for this link.
+
+```
+bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:111
+Available paths to 1-ff00:0:111
+3 Hops:
+[0] Hops: [1-ff00:0:112 ~~ 1>2 1-ff00:0:110 ~~ 1>41 1-ff00:0:111 ~~]
+    MTU: 1280
+    NextHop: 127.0.0.25:31012
+    PQC-secured: true
+    Expires: 2026-02-02 19:38:09 +0000 UTC (5h57m33s)
+    Sbom: 5550
+    SupportsEPIC: false
+    Status: alive
+    LocalIP: 127.0.0.1
+
+```
+
 ### Generate an image of any SCION topology located in /topology/ folder
 
-Generate the topology image
+Generate the topology image. You can also save the image on your PC.
 ```
 ./scion.sh topodot -s topology/peering-test.topo
 ./scion.sh topodot -s topology/peering-test-multi.topo
@@ -375,11 +413,11 @@ Stop Scion
 
 ### Troubleshooting
 
-Optional: You may clean the previous installation if you encourter some errors during installation.
+Optional: If you encouter errors during installation; you may clean the previous installation.
 ```
 make clean
 bazel clean
-## Not recommanded : remove entire Bazel directory
+## Not recommanded!!! : remove entire Bazel directory
 rm -rf ~/.cache/bazel
 ```
 
