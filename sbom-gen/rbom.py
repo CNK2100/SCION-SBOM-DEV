@@ -14,16 +14,16 @@ import math
 
 def generate_sbom(target="/"):
     """Module 1: Generate SBOM using Syft"""
-    print("📦 Module 1: SBOM Generation")
+    print("Module 1: SBOM Generation")
     print("───────────────────────────────────────────────────────────────────────")
     print(f"  Target: {target}")
     
     # Check if Syft is installed
     try:
         result = subprocess.run(["syft", "version"], capture_output=True, check=True)
-        print(f"  ✅ Syft version: {result.stdout.decode().strip().split()[1]}")
+        print(f"  Syft version: {result.stdout.decode().strip().split()[1]}")
     except:
-        print("❌ Syft not installed. Install with:")
+        print(" Syft not installed. Install with:")
         print("   curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin")
         return False
     
@@ -48,16 +48,16 @@ def generate_sbom(target="/"):
         sbom_data = json.loads(result.stdout)
         component_count = len(sbom_data.get('components', []))
         
-        print(f"  ✅ SBOM generated: sbom.json")
-        print(f"  📦 Components found: {component_count}")
+        print(f"  SBOM generated: sbom.json")
+        print(f"  Components found: {component_count}")
         print()
         return True
         
     except subprocess.CalledProcessError as e:
-        print(f"❌ Syft scan failed: {e.stderr}")
+        print(f" Syft scan failed: {e.stderr}")
         return False
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
         return False
 
 def run_grype_scan(sbom_file, output_file):
@@ -69,7 +69,7 @@ def run_grype_scan(sbom_file, output_file):
     try:
         subprocess.run(["grype", "version"], capture_output=True, check=True)
     except:
-        print("❌ Grype not installed. Install with:")
+        print(" Grype not installed. Install with:")
         print("   curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin")
         return False
     
@@ -88,14 +88,14 @@ def run_grype_scan(sbom_file, output_file):
         
         # Convert to CSV
         convert_grype_to_csv(grype_data, output_file)
-        print(f"  ✅ Grype scan complete: {output_file}")
+        print(f"  Grype scan complete: {output_file}")
         return True
         
     except subprocess.CalledProcessError as e:
-        print(f"❌ Grype scan failed: {e.stderr}")
+        print(f" Grype scan failed: {e.stderr}")
         return False
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
         return False
 
 def convert_grype_to_csv(grype_data, csv_file):
@@ -390,16 +390,16 @@ Report Files:
     with open('security-score.txt', 'w') as f:
         f.write(text_report)
     
-    print(f"\n  🎯 Security Score: {score}/100 (Grade {grade})")
-    print(f"  ⚠️  Risk Level: {risk_level}")
-    print(f"  📊 Vulnerabilities: Critical={counts['critical']}, High={counts['high']}, Medium={counts['medium']}, Low={counts['low']}")
-    print(f"  📋 VEX Status: Fixed={counts['fixed']}, Affected={counts['affected']}, Under Investigation={counts['under_investigation']}\n")
+    print(f"\n  [*] Security Score: {score}/100 (Grade {grade})")
+    print(f"  [*] Risk Level: {risk_level}")
+    print(f"  [*] Vulnerabilities: Critical={counts['critical']}, High={counts['high']}, Medium={counts['medium']}, Low={counts['low']}")
+    print(f"  [*] VEX Status: Fixed={counts['fixed']}, Affected={counts['affected']}, Under Investigation={counts['under_investigation']}\n")
     
     return True
 
 def generate_scion_config(score_file):
     """Generate SCION configuration"""
-    print("🌐 Generating SCION network configuration...")
+    print("[*] Generating SCION network configuration...")
     
     with open(score_file, 'r') as f:
         score_data = json.load(f)
@@ -422,17 +422,17 @@ def generate_scion_config(score_file):
     print(f"  Minimum Required: {min_score}/100")
     
     if config['enabled']:
-        print(f"  ✅ Score meets requirements")
+        print(f"  Score meets requirements")
     else:
-        print(f"  ⚠️  WARNING: Score below minimum threshold!")
+        print(f"  WARNING: Score below minimum threshold!")
     
-    print(f"  📄 SCION config: scion-config.json\n")
+    print(f"  SCION config: scion-config.json\n")
     return True
 
 def main():
     print("╔═══════════════════════════════════════════════════════════════════════╗")
-    print("║                    RBOM - Complete Pipeline                           ║")
-    print("║                    Modules 1, 2, 3, 4                                 ║")
+    print("║                    RBOM - Completed                                   ║")
+    print("║                                                                       ║")
     print("╚═══════════════════════════════════════════════════════════════════════╝")
     print()
     
@@ -442,7 +442,7 @@ def main():
     
     if sbom_exists:
         # SBOM exists - ask user what to do
-        print(f"📄 Found existing SBOM: {sbom_file}")
+        print(f" Found existing SBOM: {sbom_file}")
         print("  Options:")
         print("    1. Use existing SBOM (skip Module 1)")
         print("    2. Regenerate SBOM (run Module 1)")
@@ -469,10 +469,10 @@ def main():
             if not generate_sbom(target):
                 sys.exit(1)
         else:
-            print(f"  ⏭️  Skipping Module 1 - Using existing SBOM\n")
+            print(f"  Skipping Module 1 - Using existing SBOM\n")
     else:
         # No SBOM - automatically generate it
-        print("📄 No existing SBOM found - will generate new SBOM")
+        print(" No existing SBOM found - will generate new SBOM")
         print()
         
         target = input("  Enter target directory to scan (default: /): ").strip()
@@ -524,16 +524,16 @@ def main():
     
     # Summary
     print("=" * 71)
-    print("✅ RBOM Pipeline Completed Successfully!")
+    print(" RBOM Pipeline Completed Successfully!")
     print("=" * 71)
     print()
     print("Generated Files:")
-    print(f"  📄 SBOM:                   {sbom_file}")
-    print(f"  📄 Grype Report (raw):     {grype_csv}")
-    print(f"  📋 VEX Report:             {vex_csv}")
-    print(f"  📊 Security Score (JSON):  security-score.json")
-    print(f"  📄 Security Score (text):  security-score.txt")
-    print(f"  🌐 SCION Config:           scion-config.json")
+    print(f"  SBOM:                   {sbom_file}")
+    print(f"  Grype Report (raw):     {grype_csv}")
+    print(f"  VEX Report:             {vex_csv}")
+    print(f"  Security Score (JSON):  security-score.json")
+    print(f"  Security Score (text):  security-score.txt")
+    print(f"  SCION Config:           scion-config.json")
     print()
 
 if __name__ == '__main__':
