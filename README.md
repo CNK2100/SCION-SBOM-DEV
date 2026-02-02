@@ -267,8 +267,10 @@ groups
 cd ~
 
 git clone https://github.com/CNK2100/SCION-SBOM-DEV
-
+cd SCION-SBOM-DEV/
 cd scion-sbom
+sudo apt update && sudo apt install bazel-6.4.0
+bazel version
 
 ./tools/install_bazel
 
