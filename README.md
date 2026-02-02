@@ -21,15 +21,15 @@ SCION-SBOM is implemented fom [SCION Quantum](https://github.com/juagargi/quantu
 - RAM: 16 GB.
 - DISK: 256 GB
 
-## Ubuntu 22.04 update
+## Ubuntu 22.04 version details
 ```
-owner@owner:~/quantum$ lsb_release -a
+lsb_release -a
 No LSB modules are available.
 Distributor ID:	Ubuntu
 Description:	Ubuntu 22.04.5 LTS
 Release:	22.04
 Codename:	jammy
-owner@owner:~/quantum$ 
+
 ```
 Update & upgrade
 ```
@@ -54,9 +54,11 @@ sudo apt install locate
 updatedb
 
 sudo apt-get install -y graphviz python3-graphviz
-pip install pyyaml toml plumbum 
+pip install pyyaml toml plumbum
+
 sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r)
 sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
+
 sudo apt install -y linux-tools-common linux-tools-$(uname -r)
 bpftool version
 
@@ -75,21 +77,28 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docke
 sudo apt update
 apt-cache policy docker-ce
 sudo apt install docker-ce
+
 sudo apt-get install docker-compose-plugin
 sudo systemctl status docker
+
 sudo apt-get update
 sudo groupadd docker
+
 # Add your user to docker group
 sudo usermod -aG docker $USER
 sudo usermod -aG docker #YourUsername
+
 # Verify it's added to system
 getent group docker
+
 # Update the configuration
 newgrp docker
 groups
 ```
 Close the terminal and open it again.
-Verify if your username is in docker.
+
+Verify if your username is added into  docker group.
+
 If not add again with below commands
 
 ```
@@ -100,6 +109,7 @@ groups
 Running initial docker instance
 ```
 sudo systemctl status docker
+
 # Wait for docker to download the hello prg
 docker run hello-world     
 ```
@@ -185,13 +195,13 @@ Libs: -L${libdir} -loqs
 EOF
 ```
 
-verify the last command input
+Verify the last command input.
 ```
 nano /usr/local/lib/pkgconfig/liboqs-go.pc 
 ## exit nano
 ctrl+x
 ```
-Update environment
+Update environment.
 ```
 # Add to ~/.bashrc
 echo '' >> ~/.bashrc
@@ -201,7 +211,7 @@ echo 'export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"' >> ~/.
 # Reload
 source ~/.bashrc
 ```
-Final verification
+Final verification.
 ```
 pkg-config --modversion liboqs
 pkg-config --cflags liboqs-go
@@ -229,7 +239,7 @@ rm -rf liboqs liboqs-go
 
 
 
-## SCION-SBOM 
+## SCION-SBOM Installation and Running
 
 If you have existing SCION running, then stop all current SCION and docker containers; else move to Build.
 ```
@@ -244,6 +254,7 @@ If not, add your username in docker group.
 ```
 groups
 sudo usermod -aG docker YourUsername
+
 newgrp docker
 groups
 ```
@@ -274,13 +285,13 @@ WARN[0000] No services to build
 ``` 
 
 
-Check SCION documentation to build all the package or only SCION services.
+Check SCION documentation to build all the package or only needed SCION services.
 
 https://docs.scion.org/en/latest/dev/build.html
 
-```
-## If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin. Then install the correct version
+If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin. Then install the correct version.
 
+```
 sudo apt update && sudo apt install bazel-6.4.0
 ```
 Below "make" command will run for about 3 to 8 minutes depending on your PC specs.
