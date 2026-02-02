@@ -12,6 +12,8 @@ Alternatively, "naked" pre-built binaries are available for Linux x86-64 and
 can be downloaded from the [latest release](https://github.com/scionproto/scion/releases/latest) or the
 [latest nightly build](https://buildkite.com/scionproto/scion-nightly/builds/latest).
 
+[SCION-SBOM forked  from Quantum](https://github.com/juagargi/quantum.git).
+
 ## Hardware details
 - OS: Installation on Ubuntu 22.04 Laptop.
 - CPU arch: AMD64. We did not tested on Arm cpu such as Apple Silicon.
@@ -251,22 +253,21 @@ groups
 cd ~
 
 git clone https://github.com/CNK2100/SCION-SBOM-DEV
-git clone https://github.com/juagargi/quantum.git
 
-cd quantum
+cd scion-sbom
 
 ./tools/install_bazel
 
-### Install SCION Quantum extra dependencies: plumbum-1.6.9 pyyaml-6.0.1 setuptools-69.1.0 six-1.15.0 supervisor-4.2.5 supervisor-wildcards-0.1.3
+# Install extra dependencies: plumbum-1.6.9 pyyaml-6.0.1 setuptools-69.1.0 six-1.15.0 supervisor-4.2.5 supervisor-wildcards-0.1.3
 
 ./tools/install_deps
 
 ./scion.sh bazel-remote
 ```
-If you see no container running, try again all  above command and you should see below output:
+If you see no container running, wait and try again and you should see below output:
 ```
-owner@owner:~/quantum$ ./scion.sh bazel-remote
-WARN[0000] /home/owner/quantum/bazel-remote.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+ ./scion.sh bazel-remote
+WARN[0000] /bazel-remote.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
 WARN[0000] No services to build                         
 [+] up 1/1
  ✔ Container bazel-remote-cache Running
@@ -278,65 +279,25 @@ Check SCION documentation to build all the package or only SCION services.
 https://docs.scion.org/en/latest/dev/build.html
 
 ```
-## If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin.
+## If ERROR: The project you're trying to build requires Bazel 6.4.0 (specified in /home/owner/quantum/.bazelversion), but it wasn't found in /usr/bin. Then install the correct version
 
 sudo apt update && sudo apt install bazel-6.4.0
 ```
-Make command will run for about 3 to 8 minutes depending on your PC specs.
+Below "make" command will run for about 3 to 8 minutes depending on your PC specs.
 ```
 make
 make test
+# Option make test-integration. You may get an error due to the downloading of  "OpenWrt" during test-integration. Just move to the running of SCION
 make test-integration
-```
-
-Development workflow:
-```
-make - build after code changes
-make test - quick validation
-make test-integration - comprehensive testing before commits (optional)
-
-The integration tests simulate real SCION network scenarios,
-which is why they take much longer and require more setup (like the OpenWrt that may cause error).
-```
-
-
-```
-## Make test command will run for about 3 to 8 minutes depending on your PC specs.
-## It will execute 135 out of 135 tests: 135 tests pass.
-
-make test
-```
-Make test-integration (optional)
-```
-## Make test-integration command will run for about 3 to 8 minutes depending on your PC specs.
-## It may fail to download the openwrt package depending on your network firewal config and speed.
-## Then just move to next step.
-
-make test-integration
-
-## Execution #1: Executed 1 out of 17 tests: 1 test passes, 1 fails to build and 15 were skipped.
-## Run again  make test-integration
-## issue with OpenWrt that needs to be download. You can add it manually in Bazel cache and run again the test
-
 ```
 
 ## Running SCION Quantum
 
-Continue with the installation and run below. If you exit the terminal or restart your installation then run the installation command for creating a docker container:
-```
-cd ~
-cd quantum
-./tools/install_bazel
-./tools/install_deps
-./scion.sh bazel-remote
-make
-```
-Then proceed with running SCION Quantum
 
 ```
-## Locate in quantum folder if not already.
+## Locate in scion-sbom folder if not already.
 cd ~
-cd quantum
+cd scion-sbom
 make docker-images
 ## if make docker-images does not run then run first ./scion.sh bazel-remote and then make docker-images
 ## Run Scion topology
@@ -367,11 +328,7 @@ Available paths to 1-ff00:0:110
 owner@owner:~/quantum$ 
 ```
 ### Generate an image of any SCION topology located in /topology/ folder
-Install requirements
-```
-pip install pyyaml toml plumbum graphviz
-sudo apt-get install -y graphviz python3-graphviz
-```
+
 Generate the topology image
 ```
 ./scion.sh topodot -s topology/peering-test.topo
