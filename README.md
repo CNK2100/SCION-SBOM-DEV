@@ -418,4 +418,17 @@ bazel clean
 rm -rf ~/.cache/bazel
 ```
 
-
+## SBOM GENERATION
+### Syft and Grype installation
+```
+curl -sSfL https://get.anchore.io/syft | sudo sh -s -- -b /usr/local/bin
+curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin
+```
+Then locate to the sbom-gen folder
+```
+cd ..
+cd sbom-gen
+python3 ./rbom.py
+```
+RBOM will generate an SBOM of the whole system; will conduct a vulnerability scanning; will provide VEX evaluation; and will generate a security score.
+Any needed attribute could be included in SCION AS information (e.g., SBOM as of above).
