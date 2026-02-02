@@ -74,7 +74,7 @@ sudo apt install apt-transport-https ca-certificates curl software-properties-co
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt update
 apt-cache policy docker-ce
@@ -129,7 +129,6 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] h
 sudo apt update && sudo apt install bazel
 
 bazel --version
-sudo apt update && sudo apt install bazel-8.1.1
 
 ```
 
@@ -139,7 +138,9 @@ sudo apt update && sudo apt install bazel-8.1.1
 Build and install liboqs
 
 ```
-cd /tmp
+cd ~
+mkdir tmp
+cd tmp/
 # Clean up if exists
 rm -rf liboqs  
 
@@ -266,8 +267,10 @@ groups
 cd ~
 
 git clone https://github.com/CNK2100/SCION-SBOM-DEV
-
+cd SCION-SBOM-DEV/
 cd scion-sbom
+sudo apt update && sudo apt install bazel-6.4.0
+bazel version
 
 ./tools/install_bazel
 
