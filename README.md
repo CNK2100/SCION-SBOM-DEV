@@ -277,10 +277,10 @@ bazel version
 
 ./tools/install_bazel
 # If you get "Permission denied error" then do below
-chmod +x -R ./tools/
-
+cd ..
+chmod +x -R ./scion-sbom
+cd scion-sbom
 ./tools/install_bazel
-
 
 # Install extra dependencies: plumbum-1.6.9 pyyaml-6.0.1 setuptools-69.1.0 six-1.15.0 supervisor-4.2.5 supervisor-wildcards-0.1.3
 
@@ -289,10 +289,7 @@ chmod +x -R ./tools/
 ./scion.sh bazel-remote
 
 # If you get permission denied error. Verify first if your user is added in Docker group as of above.
-# If there is still error than do below
-cd ..
-chmod +x -R ./scion-sbom
-cd scion-sbom
+# Then try again
 
 sudo ./scion.sh bazel-remote
 
@@ -413,7 +410,7 @@ Stop Scion
 
 ### Troubleshooting
 
-Optional: If you encouter errors during installation; you may clean the previous installation.
+Optional: If you encouter errors during new installation; you may clean the previous SCION.
 ```
 make clean
 bazel clean
