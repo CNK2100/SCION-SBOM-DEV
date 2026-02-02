@@ -1,4 +1,4 @@
-# SCION-RBOM-DEV
+# SCION-RBOM
 The implementation of RBOM into SCION infrastructure.
 The code is based on [the SCION implementation](https://github.com/netsec-ethz/scion).
 
