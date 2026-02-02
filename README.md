@@ -129,7 +129,6 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] h
 sudo apt update && sudo apt install bazel
 
 bazel --version
-sudo apt update && sudo apt install bazel-8.1.1
 
 ```
 
@@ -139,7 +138,9 @@ sudo apt update && sudo apt install bazel-8.1.1
 Build and install liboqs
 
 ```
-cd /tmp
+cd ~
+mkdir tmp
+cd tmp/
 # Clean up if exists
 rm -rf liboqs  
 
