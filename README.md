@@ -54,6 +54,8 @@ sudo apt install locate
 updatedb
 
 sudo apt-get install -y graphviz python3-graphviz
+sudo apt install python3-pip
+
 pip install pyyaml toml plumbum
 
 sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r)
