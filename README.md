@@ -430,5 +430,5 @@ cd ..
 cd sbom-gen
 python3 ./rbom.py
 ```
-This will generate an SBOM report for the whole system and provide VEX evaluation and security metric computation.
-Any needed attribute could be included in SCION AS information e.g., SBOM as of above.
+This will generate an SBOM of the whole system, will provide VEX evaluation, and security metric computation.
+Any needed attribute could be included in SCION AS information (e.g., SBOM as of above).
