@@ -418,4 +418,16 @@ bazel clean
 rm -rf ~/.cache/bazel
 ```
 
-
+## SBOM GENERATION
+### Syft and Grype installation
+```
+curl -sSfL https://get.anchore.io/syft | sudo sh -s -- -b /usr/local/bin
+curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin
+```
+Then locate to the sbom-gen folder
+```
+cd ..
+cd sbom-gen
+python3 ./rbom.py
+```
+This will generate an SBOM report for the whole system and provide VEX evaluation and security metric computation.
