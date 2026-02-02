@@ -12,7 +12,7 @@ Alternatively, "naked" pre-built binaries are available for Linux x86-64 and
 can be downloaded from the [latest release](https://github.com/scionproto/scion/releases/latest) or the
 [latest nightly build](https://buildkite.com/scionproto/scion-nightly/builds/latest).
 
-SCION-SBOM is forked fom [SCION Quantum](https://github.com/juagargi/quantum.git).
+SCION-SBOM is implemented fom [SCION Quantum](https://github.com/juagargi/quantum.git).
 
 ## Hardware details
 - OS: Installation on Ubuntu 22.04 Laptop.
@@ -248,7 +248,7 @@ newgrp docker
 groups
 ```
 
-
+### Build
 ```
 cd ~
 
@@ -287,11 +287,13 @@ Below "make" command will run for about 3 to 8 minutes depending on your PC spec
 ```
 make
 make test
-# Option make test-integration. You may get an error due to the downloading of  "OpenWrt" during test-integration. Just move to the running of SCION
+# Option make test-integration. 
+# May get error due to the low-speed downloading of "OpenWrt".
+# Just move to the Running  SCION-SBOM Section.
 make test-integration
 ```
 
-## Running SCION Quantum
+## Running SCION-SBOM
 
 
 ```
@@ -325,7 +327,7 @@ Available paths to 1-ff00:0:110
     SupportsEPIC: false
     Status: alive
     LocalIP: 127.0.0.1
-owner@owner:~/quantum$ 
+ 
 ```
 ### Generate an image of any SCION topology located in /topology/ folder
 
@@ -347,7 +349,7 @@ Stop Scion
 
 ### Troubleshooting
 
-Optional: You may clean the previous installation if you encourter errors
+Optional: You may clean the previous installation if you encourter some errors during installation.
 ```
 make clean
 bazel clean
