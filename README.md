@@ -12,7 +12,7 @@ Alternatively, "naked" pre-built binaries are available for Linux x86-64 and
 can be downloaded from the [latest release](https://github.com/scionproto/scion/releases/latest) or the
 [latest nightly build](https://buildkite.com/scionproto/scion-nightly/builds/latest).
 
-[SCION-SBOM forked  from Quantum](https://github.com/juagargi/quantum.git).
+SCION-SBOM is forked fom [SCION Quantum](https://github.com/juagargi/quantum.git).
 
 ## Hardware details
 - OS: Installation on Ubuntu 22.04 Laptop.
