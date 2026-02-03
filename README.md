@@ -297,7 +297,7 @@ sudo ./scion.sh bazel-remote
 ```
 Wait for 3 sec and if you see no container running, then try again above command. 
 
-Below output is the output:
+Below  is the output:
 ```
  ./scion.sh bazel-remote
 WARN[0000] /bazel-remote.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
@@ -306,7 +306,7 @@ WARN[0000] No services to build
  ✔ Container bazel-remote-cache Running
 ``` 
 
-Check SCION documentation to either build all the packages or  build only needed SCION service.
+Check SCION documentation to either build all the packages or  build only needed SCION services.
 
 https://docs.scion.org/en/latest/dev/build.html
 
@@ -332,7 +332,7 @@ make test-integration
 cd ~
 cd scion-sbom
 # Below initial command will take  2 to 5 min depending on your specs.
-# Next time it will run faster
+# Next time it will run faster.
 
 make docker-images
 
