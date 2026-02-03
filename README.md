@@ -430,5 +430,5 @@ cd ..
 cd sbom-gen
 python3 ./rbom.py
 ```
-RBOM will generate an SBOM of the whole system; will conduct a vulnerability scanning; will provide VEX evaluation; and will generate a security score.
+RBOM will generate an SBOM of the whole system; will conduct a vulnerability scan; will provide VEX evaluation; and will generate a security score.
 Any needed attribute could be included in SCION AS information (e.g., SBOM as of above).
