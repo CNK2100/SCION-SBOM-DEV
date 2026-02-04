@@ -432,3 +432,10 @@ python3 ./rbom.py
 ```
 RBOM will generate an SBOM of the whole system; will conduct a vulnerability scan; will provide VEX evaluation; and will generate a security score.
 Any needed attribute could be included in SCION AS information (e.g., SBOM as of above).
+
+## About
+
+This repository is maintained by Dr. Carlos. For reporting bugs, you can submit an issue to the GitHub repository.
+
+
+
