@@ -341,7 +341,7 @@ Then run again make docker-images
 
 ## Run a desired Scion topology
 
-./scion.sh topology -c topology/sbom.topo 
+./scion.sh topology -c topology/sbom-2.topo 
 ./scion.sh run
 ```
 Testing the SCION network
