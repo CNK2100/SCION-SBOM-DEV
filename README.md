@@ -382,8 +382,11 @@ Available paths to 1-ff00:0:111
     MTU: 1280
     NextHop: 127.0.0.25:31012
     PQC-secured: true
-    Expires: 2026-02-02 19:38:09 +0000 UTC (5h57m33s)
-    Sbom: 5550
+    Expires: 2026-02-10 16:37:16 +0000 UTC (5h59m42s)
+    Sbom: 545050
+    Vuln: 154052
+    Fixed: 83956
+    Affected: 69954
     SupportsEPIC: false
     Status: alive
     LocalIP: 127.0.0.1
