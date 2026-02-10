@@ -152,7 +152,7 @@ func testInsertBeacon(t *testing.T, db beacon.DB) {
 	assert.Equal(t, exp, inserted)
 
 	// Fetch the candidate beacons
-	results, err := db.CandidateBeacons(ctx, 10, beacon.UsageProp, 0)
+	results, err := db.CandidateBeacons(ctx, 10, beacon.UsageProp, 0) 
 	require.NoError(t, err)
 
 	// There should only be one candidate beacon, and it should match the inserted.
@@ -344,7 +344,10 @@ type IfInfo struct {
 	Ingress common.IFIDType
 	Egress  common.IFIDType
 	Peers   []PeerEntry
-	Sbom    uint64
+	// Sbom    uint64
+	// Vuln    uint64
+	// Fixed   uint64
+	// Affected  uint64
 }
 
 func AllocBeacon(
@@ -375,17 +378,43 @@ func AllocBeacon(
 				},
 			})
 		}
-		staticInfoExt := &staticinfo.Extension{
-			Sbom: staticinfo.SbomInfo{
-				Inter: make(map[common.IFIDType]uint64),
-				Intra: make(map[common.IFIDType]uint64),
-			},
-		}
-		
-		// Map the Sbom from IfInfo to the Egress interface in the extension
-		if as.Sbom > 0 {
-			staticInfoExt.Sbom.Inter[common.IFIDType(as.Egress)] = as.Sbom
-		}
+		// staticInfoExt := &staticinfo.Extension{
+		// 	Sbom: staticinfo.SbomInfo{
+		// 		Inter: make(map[common.IFIDType]uint64),
+		// 		Intra: make(map[common.IFIDType]uint64),
+		// 	},
+		// }
+		// // Map the Sbom from IfInfo to the Egress interface in the extension
+		// if as.Sbom > 0 {
+		// 	staticInfoExt.Sbom.Inter[common.IFIDType(as.Egress)] = as.Sbom
+		// }
+		// staticInfoExt = &staticinfo.Extension{
+		// 	Vuln: staticinfo.VulnInfo{
+		// 		Inter: make(map[common.IFIDType]uint64),
+		// 		Intra: make(map[common.IFIDType]uint64),
+		// 	},
+		// }
+		// if as.Vuln > 0 {
+		// 	staticInfoExt.Vuln.Inter[common.IFIDType(as.Egress)] = as.Vuln
+		// }
+		// staticInfoExt = &staticinfo.Extension{
+		// 	Fixed: staticinfo.FixedInfo{
+		// 		Inter: make(map[common.IFIDType]uint64),
+		// 		Intra: make(map[common.IFIDType]uint64),
+		// 	},
+		// }
+		// if as.Fixed > 0 {
+		// 	staticInfoExt.Fixed.Inter[common.IFIDType(as.Egress)] = as.Fixed
+		// }
+		// staticInfoExt = &staticinfo.Extension{
+		// 	Affected: staticinfo.AffectedInfo{
+		// 		Inter: make(map[common.IFIDType]uint64),
+		// 		Intra: make(map[common.IFIDType]uint64),
+		// 	},
+		// }
+		// if as.Affected > 0 {
+		// 	staticInfoExt.Affected.Inter[common.IFIDType(as.Egress)] = as.Affected
+		// }
 		entries[i] = seg.ASEntry{
 			Local: as.IA,
 			Next:  as.Next,

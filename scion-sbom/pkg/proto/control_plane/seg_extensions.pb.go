@@ -192,6 +192,9 @@ type StaticInfoExtension struct {
 	Bandwidth       *BandwidthInfo             `protobuf:"bytes,2,opt,name=bandwidth,proto3" json:"bandwidth,omitempty"`
 	CarbonIntensity *CarbonIntensityInfo       `protobuf:"bytes,7,opt,name=carbon_intensity,json=carbonIntensity,proto3" json:"carbon_intensity,omitempty"`
 	Sbom            *SbomInfo                  `protobuf:"bytes,8,opt,name=Sbom,proto3" json:"Sbom,omitempty"`
+	Vuln            *VulnInfo                  `protobuf:"bytes,8,opt,name=Vuln,proto3" json:"Vuln,omitempty"`
+	Fixed           *FixedInfo                 `protobuf:"bytes,8,opt,name=Fixed,proto3" json:"Fixed,omitempty"`
+	Affected        *AffectedInfo              `protobuf:"bytes,8,opt,name=Affected,proto3" json:"Affected,omitempty"`
 	Geo             map[uint64]*GeoCoordinates `protobuf:"bytes,3,rep,name=geo,proto3" json:"geo,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	LinkType        map[uint64]LinkType        `protobuf:"bytes,4,rep,name=link_type,json=linkType,proto3" json:"link_type,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=proto.control_plane.v1.LinkType"`
 	InternalHops    map[uint64]uint32          `protobuf:"bytes,5,rep,name=internal_hops,json=internalHops,proto3" json:"internal_hops,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
@@ -254,6 +257,27 @@ func (x *StaticInfoExtension) GetCarbonIntensity() *CarbonIntensityInfo {
 func (x *StaticInfoExtension) GetSbom() *SbomInfo {
 	if x != nil {
 		return x.Sbom
+	}
+	return nil
+}
+
+func (x *StaticInfoExtension) GetVuln() *VulnInfo {
+	if x != nil {
+		return x.Vuln
+	}
+	return nil
+}
+
+func (x *StaticInfoExtension) GetFixed() *FixedInfo {
+	if x != nil {
+		return x.Fixed
+	}
+	return nil
+}
+
+func (x *StaticInfoExtension) GetAffected() *AffectedInfo {
+	if x != nil {
+		return x.Affected
 	}
 	return nil
 }
@@ -505,6 +529,176 @@ func (x *SbomInfo) GetInter() map[uint64]uint64 {
 	}
 	return nil
 }
+
+type VulnInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Intra map[uint64]uint64 `protobuf:"bytes,1,rep,name=intra,proto3" json:"intra,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+	Inter map[uint64]uint64 `protobuf:"bytes,2,rep,name=inter,proto3" json:"inter,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+}
+
+func (x *VulnInfo) Reset() {
+	*x = VulnInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_control_plane_v1_seg_extensions_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VulnInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VulnInfo) ProtoMessage() {}
+
+func (x *VulnInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_control_plane_v1_seg_extensions_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VulnInfo.ProtoReflect.Descriptor instead.
+func (*VulnInfo) Descriptor() ([]byte, []int) {
+	return file_proto_control_plane_v1_seg_extensions_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *VulnInfo) GetIntra() map[uint64]uint64 {
+	if x != nil {
+		return x.Intra
+	}
+	return nil
+}
+
+func (x *VulnInfo) GetInter() map[uint64]uint64 {
+	if x != nil {
+		return x.Inter
+	}
+	return nil
+}
+
+type FixedInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Intra map[uint64]uint64 `protobuf:"bytes,1,rep,name=intra,proto3" json:"intra,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+	Inter map[uint64]uint64 `protobuf:"bytes,2,rep,name=inter,proto3" json:"inter,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+}
+
+func (x *FixedInfo) Reset() {
+	*x = FixedInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_control_plane_v1_seg_extensions_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FixedInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FixedInfo) ProtoMessage() {}
+
+func (x *FixedInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_control_plane_v1_seg_extensions_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FixedInfo.ProtoReflect.Descriptor instead.
+func (*FixedInfo) Descriptor() ([]byte, []int) {
+	return file_proto_control_plane_v1_seg_extensions_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *FixedInfo) GetIntra() map[uint64]uint64 {
+	if x != nil {
+		return x.Intra
+	}
+	return nil
+}
+
+func (x *FixedInfo) GetInter() map[uint64]uint64 {
+	if x != nil {
+		return x.Inter
+	}
+	return nil
+}
+
+
+type AffectedInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Intra map[uint64]uint64 `protobuf:"bytes,1,rep,name=intra,proto3" json:"intra,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+	Inter map[uint64]uint64 `protobuf:"bytes,2,rep,name=inter,proto3" json:"inter,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+}
+
+func (x *AffectedInfo) Reset() {
+	*x = AffectedInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_control_plane_v1_seg_extensions_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AffectedInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AffectedInfo) ProtoMessage() {}
+
+func (x *AffectedInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_control_plane_v1_seg_extensions_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AffectedInfo.ProtoReflect.Descriptor instead.
+func (*AffectedInfo) Descriptor() ([]byte, []int) {
+	return file_proto_control_plane_v1_seg_extensions_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *AffectedInfo) GetIntra() map[uint64]uint64 {
+	if x != nil {
+		return x.Intra
+	}
+	return nil
+}
+
+func (x *AffectedInfo) GetInter() map[uint64]uint64 {
+	if x != nil {
+		return x.Inter
+	}
+	return nil
+}
+
+
+
+// END EDIT
 
 type GeoCoordinates struct {
 	state         protoimpl.MessageState

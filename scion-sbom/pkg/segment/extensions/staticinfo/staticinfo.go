@@ -32,6 +32,9 @@ type Extension struct {
 	Bandwidth       BandwidthInfo
 	CarbonIntensity CarbonIntensityInfo
 	Sbom            SbomInfo
+	Vuln            VulnInfo
+	Fixed           FixedInfo
+	Affected        AffectedInfo
 	Geo             GeoInfo
 	LinkType        LinkTypeInfo
 	InternalHops    InternalHopsInfo
@@ -62,6 +65,21 @@ type CarbonIntensityInfo struct {
 // SbomInfo is the internal repesentation of `Sbom` in the
 // StaticInfoExtension.
 type SbomInfo struct {
+	Intra map[common.IFIDType]uint64
+	Inter map[common.IFIDType]uint64
+}
+
+type VulnInfo struct {
+	Intra map[common.IFIDType]uint64
+	Inter map[common.IFIDType]uint64
+}
+
+type FixedInfo struct {
+	Intra map[common.IFIDType]uint64
+	Inter map[common.IFIDType]uint64
+}
+
+type AffectedInfo struct {
 	Intra map[common.IFIDType]uint64
 	Inter map[common.IFIDType]uint64
 }
@@ -108,6 +126,9 @@ func FromPB(pb *cppb.StaticInfoExtension) *Extension {
 		Bandwidth:       bandwidthInfoFromPB(pb.Bandwidth),
 		CarbonIntensity: carbonIntensityInfoFromPB(pb.CarbonIntensity),
 		Sbom:            SbomInfoFromPB(pb.Sbom),
+		Vuln:            VulnInfoFromPB(pb.Vuln),
+		Fixed:           FixedInfoFromPB(pb.Fixed),
+		Affected:        AffectedInfoFromPB(pb.Affected),
 		Geo:             geoInfoFromPB(pb.Geo),
 		LinkType:        linkTypeInfoFromPB(pb.LinkType),
 		InternalHops:    internalHopsInfoFromPB(pb.InternalHops),
@@ -187,6 +208,60 @@ func SbomInfoFromPB(pb *cppb.SbomInfo) SbomInfo {
 	}
 }
 
+func VulnInfoFromPB(pb *cppb.VulnInfo) VulnInfo {
+	if pb == nil || len(pb.Intra) == 0 && len(pb.Inter) == 0 {
+		return VulnInfo{}
+	}
+	intra := make(map[common.IFIDType]uint64, len(pb.Intra))
+	for ifid, v := range pb.Intra {
+		intra[common.IFIDType(ifid)] = v
+	}
+	inter := make(map[common.IFIDType]uint64, len(pb.Inter))
+	for ifid, v := range pb.Inter {
+		inter[common.IFIDType(ifid)] = v
+	}
+	return VulnInfo{
+		Intra: intra,
+		Inter: inter,
+	}
+}
+
+func FixedInfoFromPB(pb *cppb.FixedInfo) FixedInfo {
+	if pb == nil || len(pb.Intra) == 0 && len(pb.Inter) == 0 {
+		return FixedInfo{}
+	}
+	intra := make(map[common.IFIDType]uint64, len(pb.Intra))
+	for ifid, v := range pb.Intra {
+		intra[common.IFIDType(ifid)] = v
+	}
+	inter := make(map[common.IFIDType]uint64, len(pb.Inter))
+	for ifid, v := range pb.Inter {
+		inter[common.IFIDType(ifid)] = v
+	}
+	return FixedInfo{
+		Intra: intra,
+		Inter: inter,
+	}
+}
+
+func AffectedInfoFromPB(pb *cppb.AffectedInfo) AffectedInfo {
+	if pb == nil || len(pb.Intra) == 0 && len(pb.Inter) == 0 {
+		return AffectedInfo{}
+	}
+	intra := make(map[common.IFIDType]uint64, len(pb.Intra))
+	for ifid, v := range pb.Intra {
+		intra[common.IFIDType(ifid)] = v
+	}
+	inter := make(map[common.IFIDType]uint64, len(pb.Inter))
+	for ifid, v := range pb.Inter {
+		inter[common.IFIDType(ifid)] = v
+	}
+	return AffectedInfo{
+		Intra: intra,
+		Inter: inter,
+	}
+}
+
 func geoInfoFromPB(pb map[uint64]*cppb.GeoCoordinates) GeoInfo {
 	if len(pb) == 0 {
 		return nil
@@ -248,6 +323,9 @@ func ToPB(si *Extension) *cppb.StaticInfoExtension {
 		Bandwidth:       bandwidthInfoToPB(si.Bandwidth),
 		CarbonIntensity: carbonIntensityInfoToPB(si.CarbonIntensity),
 		Sbom:            SbomInfoToPB(si.Sbom),
+		Vuln:            VulnInfoToPB(si.Vuln),
+		Fixed:           FixedInfoToPB(si.Fixed),
+		Affected:        AffectedInfoToPB(si.Affected),
 		Geo:             geoInfoToPB(si.Geo),
 		LinkType:        linkTypeInfoToPB(si.LinkType),
 		InternalHops:    internalHopsInfoToPB(si.InternalHops),
@@ -326,6 +404,61 @@ func SbomInfoToPB(si SbomInfo) *cppb.SbomInfo {
 		Inter: inter,
 	}
 }
+
+func VulnInfoToPB(si VulnInfo) *cppb.VulnInfo {
+	if len(si.Intra) == 0 && len(si.Inter) == 0 {
+		return nil
+	}
+	intra := make(map[uint64]uint64, len(si.Intra))
+	for ifid, v := range si.Intra {
+		intra[uint64(ifid)] = v
+	}
+	inter := make(map[uint64]uint64, len(si.Inter))
+	for ifid, v := range si.Inter {
+		inter[uint64(ifid)] = v
+	}
+	return &cppb.VulnInfo{
+		Intra: intra,
+		Inter: inter,
+	}
+}
+
+func FixedInfoToPB(si FixedInfo) *cppb.FixedInfo {
+	if len(si.Intra) == 0 && len(si.Inter) == 0 {
+		return nil
+	}
+	intra := make(map[uint64]uint64, len(si.Intra))
+	for ifid, v := range si.Intra {
+		intra[uint64(ifid)] = v
+	}
+	inter := make(map[uint64]uint64, len(si.Inter))
+	for ifid, v := range si.Inter {
+		inter[uint64(ifid)] = v
+	}
+	return &cppb.FixedInfo{
+		Intra: intra,
+		Inter: inter,
+	}
+}
+
+func AffectedInfoToPB(si AffectedInfo) *cppb.AffectedInfo {
+	if len(si.Intra) == 0 && len(si.Inter) == 0 {
+		return nil
+	}
+	intra := make(map[uint64]uint64, len(si.Intra))
+	for ifid, v := range si.Intra {
+		intra[uint64(ifid)] = v
+	}
+	inter := make(map[uint64]uint64, len(si.Inter))
+	for ifid, v := range si.Inter {
+		inter[uint64(ifid)] = v
+	}
+	return &cppb.AffectedInfo{
+		Intra: intra,
+		Inter: inter,
+	}
+}
+
 func geoInfoToPB(gi GeoInfo) map[uint64]*cppb.GeoCoordinates {
 	if len(gi) == 0 {
 		return nil

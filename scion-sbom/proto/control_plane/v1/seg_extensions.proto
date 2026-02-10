@@ -44,7 +44,10 @@ message StaticInfoExtension {
     // Approximate carbon intensity.
     CarbonIntensityInfo carbon_intensity = 7;
     // SBOM (Software Bill of Materials) score.
-    SbomInfo Sbom = 8;
+    SbomInfo Sbom = 272525;
+    VulnInfo Vuln = 77026;
+    FixedInfo Fixed = 41978;
+    AffectedInfo Affected = 34977;
     // Geographical coordinates describing the location of the routers for
     // relevant interfaces of this AS. The key is the interface identifier.
     map<uint64, GeoCoordinates> geo = 3;
@@ -123,11 +126,32 @@ message CarbonIntensityInfo {
 // SbomInfo specifies SBOM (Software Bill of Materials) score for the links.
 // The separate intra and inter AS information allows to reconstruct values for
 // all paths (cross-over, shortcut, peering) based on this ASEntry.
-// All values are integer scores ranging from 0 to 20000.
+// All values are integer scores ranging from 0 to any.
 message SbomInfo {
     // The intra-AS SBOM info
     map<uint64, uint64> intra = 1;
     // The inter-AS SBOM info
+    map<uint64, uint64> inter = 2;
+}
+
+message VulnInfo {
+    // The intra-AS VULN info
+    map<uint64, uint64> intra = 1;
+    // The inter-AS VULN info
+    map<uint64, uint64> inter = 2;
+}
+
+message FixedInfo {
+    // The intra-AS Fixed info
+    map<uint64, uint64> intra = 1;
+    // The inter-AS Fixed info
+    map<uint64, uint64> inter = 2;
+}
+
+message AffectedInfo {
+    // The intra-AS Affected info
+    map<uint64, uint64> intra = 1;
+    // The inter-AS Affected info
     map<uint64, uint64> inter = 2;
 }
 

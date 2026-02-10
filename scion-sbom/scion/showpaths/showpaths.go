@@ -53,6 +53,9 @@ type Path struct {
 	Latency         []time.Duration `json:"latency" yaml:"latency"`
 	CarbonIntensity []int64         `json:"carbon_intensity"`
 	Sbom            []uint64        `json:"Sbom"`
+	Vuln            []uint64        `json:"Vuln"`
+	Fixed           []uint64        `json:"Fixed"`
+	Affected        []uint64        `json:"Affected"`
 	Status          string          `json:"status,omitempty" yaml:"status,omitempty"`
 	StatusInfo      string          `json:"status_info,omitempty" yaml:"status_info,omitempty"`
 	Local           netip.Addr      `json:"local_ip,omitempty" yaml:"local_ip,omitempty"`
@@ -109,6 +112,9 @@ func (r Result) Human(w io.Writer, showExtendedMetadata, colored bool) {
 				"Bandwidth", humanBandwidth(meta),
 				"CarbonIntensity", humanCarbonIntensity(meta),
 				"Sbom", humanSbom(meta),
+				"Vuln", humanVuln(meta),
+				"Fixed", humanFixed(meta),
+				"Affected", humanAffected(meta),
 				"Geo", humanGeo(meta, cs),
 				"LinkType", humanLinkType(meta),
 				"InternalHops", humanInternalHops(meta),
@@ -231,6 +237,65 @@ func humanSbom(p *snet.PathMetadata) string {
 	}
 	return ""
 }
+
+
+func humanVuln(p *snet.PathMetadata) string {
+	complete := true
+	var tot uint64 = 0
+	for _, v := range p.Vuln {
+		complete = complete && v >= 0
+		if v >= 0 {
+			tot += v
+		}
+	}
+	if complete {
+		return fmt.Sprintf("%d", tot)
+	}
+	if tot > 0 {
+		return fmt.Sprintf(">%d (information incomplete)", tot)
+	}
+	return ""
+}
+
+func humanFixed(p *snet.PathMetadata) string {
+	complete := true
+	var tot uint64 = 0
+	for _, v := range p.Fixed {
+		complete = complete && v >= 0
+		if v >= 0 {
+			tot += v
+		}
+	}
+	if complete {
+		return fmt.Sprintf("%d", tot)
+	}
+	if tot > 0 {
+		return fmt.Sprintf(">%d (information incomplete)", tot)
+	}
+	return ""
+}
+
+func humanAffected(p *snet.PathMetadata) string {
+	complete := true
+	var tot uint64 = 0
+	for _, v := range p.Affected {
+		complete = complete && v >= 0
+		if v >= 0 {
+			tot += v
+		}
+	}
+	if complete {
+		return fmt.Sprintf("%d", tot)
+	}
+	if tot > 0 {
+		return fmt.Sprintf(">%d (information incomplete)", tot)
+	}
+	return ""
+}
+
+
+
+// END
 
 // humanGeo summarizes the geographical information in the meta data in a human
 // readable string. Returns empty string if no information is available.
@@ -435,6 +500,9 @@ func Run(ctx context.Context, dst addr.IA, cfg Config) (*Result, error) {
 			Latency:         pathMeta.Latency,
 			CarbonIntensity: pathMeta.CarbonIntensity,
 			Sbom:            pathMeta.Sbom,
+			Vuln:            pathMeta.Vuln,
+			Fixed:           pathMeta.Fixed,
+			Affected:        pathMeta.Affected,
 			Hops:            []Hop{},
 		}
 		for _, hop := range path.Metadata().Interfaces {

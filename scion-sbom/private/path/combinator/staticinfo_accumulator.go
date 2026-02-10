@@ -63,6 +63,9 @@ func collectMetadata(interfaces []snet.PathInterface, asEntries []seg.ASEntry) s
 		Bandwidth:       collectBandwidth(path),
 		CarbonIntensity: collectCarbonIntensity(path),
 		Sbom:            collectSbom(path),
+		Vuln:            collectVuln(path),
+		Fixed:           collectFixed(path),
+		Affected:        collectAffected(path),
 		Geo:             collectGeo(path),
 		LinkType:        collectLinkType(path),
 		InternalHops:    collectInternalHops(path),
@@ -293,6 +296,180 @@ func addHopSbom(m map[hopKey]uint64, a, b snet.PathInterface, v uint64) {
 		m[k] = v
 	}
 }
+
+
+func collectVuln(p pathInfo) []uint64 {
+	// This is identical to collecting carbon intensities.
+	// 1)
+	hopVulns := make(map[hopKey]uint64)
+	for _, asEntry := range p.ASEntries {
+		staticInfo := asEntry.Extensions.StaticInfo
+		if staticInfo == nil {
+			continue
+		}
+		egIF := snet.PathInterface{
+			IA: asEntry.Local,
+			ID: common.IFIDType(asEntry.HopEntry.HopField.ConsEgress),
+		}
+		Vuln := staticInfo.Vuln
+		// Egress to other local interfaces
+		for ifid, v := range Vuln.Intra {
+			otherIF := snet.PathInterface{IA: asEntry.Local, ID: ifid}
+			addHopVuln(hopVulns, egIF, otherIF, v)
+		}
+		// Local peer to remote peer interface
+		for ifid, v := range Vuln.Inter {
+			localIF := snet.PathInterface{IA: asEntry.Local, ID: ifid}
+			addHopVuln(hopVulns, localIF, p.RemoteIF[localIF], v)
+		}
+	}
+
+	// 2)
+	Vulns := make([]uint64, len(p.Interfaces)-1)
+	for i := 0; i+1 < len(p.Interfaces); i++ {
+		vu, ok := hopVulns[makeHopKey(p.Interfaces[i], p.Interfaces[i+1])]
+		v := uint64(vu)
+		if !ok {
+			v = 0
+		}
+		Vulns[i] = v
+	}
+
+	return Vulns
+}
+
+// addHopVuln adds the Vuln score of hop a-b to the map. Handle conflicting entries by
+// chosing the more conservative value (i.e. keep higher value).
+func addHopVuln(m map[hopKey]uint64, a, b snet.PathInterface, v uint64) {
+	// Skip incomplete entries; not strictly necessary, we'd just not look this up
+	if a.ID == 0 || b.ID == 0 {
+		return
+	}
+	if v == 0 {
+		return
+	}
+	k := makeHopKey(a, b)
+	if vExisting, exists := m[k]; !exists || vExisting < v {
+		m[k] = v
+	}
+}
+
+
+
+func collectFixed(p pathInfo) []uint64 {
+	// This is identical to collecting carbon intensities.
+	// 1)
+	hopFixeds := make(map[hopKey]uint64)
+	for _, asEntry := range p.ASEntries {
+		staticInfo := asEntry.Extensions.StaticInfo
+		if staticInfo == nil {
+			continue
+		}
+		egIF := snet.PathInterface{
+			IA: asEntry.Local,
+			ID: common.IFIDType(asEntry.HopEntry.HopField.ConsEgress),
+		}
+		Fixed := staticInfo.Fixed
+		// Egress to other local interfaces
+		for ifid, v := range Fixed.Intra {
+			otherIF := snet.PathInterface{IA: asEntry.Local, ID: ifid}
+			addHopFixed(hopFixeds, egIF, otherIF, v)
+		}
+		// Local peer to remote peer interface
+		for ifid, v := range Fixed.Inter {
+			localIF := snet.PathInterface{IA: asEntry.Local, ID: ifid}
+			addHopFixed(hopFixeds, localIF, p.RemoteIF[localIF], v)
+		}
+	}
+
+	// 2)
+	Fixeds := make([]uint64, len(p.Interfaces)-1)
+	for i := 0; i+1 < len(p.Interfaces); i++ {
+		vu, ok := hopFixeds[makeHopKey(p.Interfaces[i], p.Interfaces[i+1])]
+		v := uint64(vu)
+		if !ok {
+			v = 0
+		}
+		Fixeds[i] = v
+	}
+
+	return Fixeds
+}
+
+// addHopFixed adds the Fixed score of hop a-b to the map. Handle conflicting entries by
+// chosing the more conservative value (i.e. keep higher value).
+func addHopFixed(m map[hopKey]uint64, a, b snet.PathInterface, v uint64) {
+	// Skip incomplete entries; not strictly necessary, we'd just not look this up
+	if a.ID == 0 || b.ID == 0 {
+		return
+	}
+	if v == 0 {
+		return
+	}
+	k := makeHopKey(a, b)
+	if vExisting, exists := m[k]; !exists || vExisting < v {
+		m[k] = v
+	}
+}
+
+
+
+func collectAffected(p pathInfo) []uint64 {
+	// This is identical to collecting carbon intensities.
+	// 1)
+	hopAffecteds := make(map[hopKey]uint64)
+	for _, asEntry := range p.ASEntries {
+		staticInfo := asEntry.Extensions.StaticInfo
+		if staticInfo == nil {
+			continue
+		}
+		egIF := snet.PathInterface{
+			IA: asEntry.Local,
+			ID: common.IFIDType(asEntry.HopEntry.HopField.ConsEgress),
+		}
+		Affected := staticInfo.Affected
+		// Egress to other local interfaces
+		for ifid, v := range Affected.Intra {
+			otherIF := snet.PathInterface{IA: asEntry.Local, ID: ifid}
+			addHopAffected(hopAffecteds, egIF, otherIF, v)
+		}
+		// Local peer to remote peer interface
+		for ifid, v := range Affected.Inter {
+			localIF := snet.PathInterface{IA: asEntry.Local, ID: ifid}
+			addHopAffected(hopAffecteds, localIF, p.RemoteIF[localIF], v)
+		}
+	}
+
+	// 2)
+	Affecteds := make([]uint64, len(p.Interfaces)-1)
+	for i := 0; i+1 < len(p.Interfaces); i++ {
+		vu, ok := hopAffecteds[makeHopKey(p.Interfaces[i], p.Interfaces[i+1])]
+		v := uint64(vu)
+		if !ok {
+			v = 0
+		}
+		Affecteds[i] = v
+	}
+
+	return Affecteds
+}
+
+// chosing the more conservative value (i.e. keep higher value).
+func addHopAffected(m map[hopKey]uint64, a, b snet.PathInterface, v uint64) {
+	// Skip incomplete entries; not strictly necessary, we'd just not look this up
+	if a.ID == 0 || b.ID == 0 {
+		return
+	}
+	if v == 0 {
+		return
+	}
+	k := makeHopKey(a, b)
+	if vExisting, exists := m[k]; !exists || vExisting < v {
+		m[k] = v
+	}
+}
+// END RBOM INFO
+
 
 func collectGeo(p pathInfo) []snet.GeoCoordinates {
 	ifaceGeos := make(map[snet.PathInterface]snet.GeoCoordinates)

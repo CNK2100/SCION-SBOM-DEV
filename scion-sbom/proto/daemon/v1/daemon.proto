@@ -128,6 +128,9 @@ message Path {
     bool PQsecure = 15;
     //Placeholder comment for SBOM
     repeated uint64 Sbom = 16;
+    repeated uint64 Vuln = 17;
+    repeated uint64 Fixed = 18;
+    repeated uint64 Affected = 19;
 }
 
 message EpicAuths {

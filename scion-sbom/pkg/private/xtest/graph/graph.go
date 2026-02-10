@@ -384,13 +384,44 @@ func (g *Graph) CarbonIntensity(a, b uint16) uint64 {
 	return uint64(a * b * 11939 % 5000) // value in 0-5000 grams of CO2 per terabyte
 }
 
+// SBOM returns an arbitrary test SBOM value between two interfaces.
 func (g *Graph) Sbom(a, b uint16) uint64 {
 	sameIA := (g.parents[a] == g.parents[b])
 	if !sameIA && g.links[a] != b {
 		panic("interfaces must be in the same AS or connected by a link")
 	}
 
-	return uint64(a * b * 11939 % 2000) // Threat score of 0-2000 (test value)
+	return uint64(a * b ) 
+}
+
+// Vuln returns an arbitrary test Vuln value between two interfaces.
+func (g *Graph) Vuln(a, b uint16) uint64 {
+	sameIA := (g.parents[a] == g.parents[b])
+	if !sameIA && g.links[a] != b {
+		panic("interfaces must be in the same AS or connected by a link")
+	}
+
+	return uint64(a * b) 
+}
+
+// Fixed returns an arbitrary test Fixed value between two interfaces.
+func (g *Graph) Fixed(a, b uint16) uint64 {
+	sameIA := (g.parents[a] == g.parents[b])
+	if !sameIA && g.links[a] != b {
+		panic("interfaces must be in the same AS or connected by a link")
+	}
+
+	return uint64(a * b)
+}
+
+// Affected returns an arbitrary test Affected  value between two interfaces.
+func (g *Graph) Affected(a, b uint16) uint64 {
+	sameIA := (g.parents[a] == g.parents[b])
+	if !sameIA && g.links[a] != b {
+		panic("interfaces must be in the same AS or connected by a link")
+	}
+
+	return uint64(a * b)
 }
 
 // GeoCoordinates returns an arbitrary test GeoCoordinate for the interface
@@ -688,6 +719,52 @@ func generateStaticInfo(g *Graph, ia addr.IA, inIF, outIF uint16) *staticinfo.Ex
 		}
 	}
 
+	Vuln := staticinfo.VulnInfo{}
+	if outIF != 0 {
+		Vuln.Intra = make(map[common.IFIDType]uint64)
+		Vuln.Inter = make(map[common.IFIDType]uint64)
+		for ifid := range as.IFIDs {
+			if ifid != outIF {
+				Vuln.Intra[common.IFIDType(ifid)] = g.Vuln(ifid, outIF)
+			}
+			if ifid == outIF || g.isPeer[ifid] {
+				Vuln.Inter[common.IFIDType(ifid)] =
+					g.Vuln(ifid, g.links[ifid])
+			}
+		}
+	}
+
+	Fixed := staticinfo.FixedInfo{}
+	if outIF != 0 {
+		Fixed.Intra = make(map[common.IFIDType]uint64)
+		Fixed.Inter = make(map[common.IFIDType]uint64)
+		for ifid := range as.IFIDs {
+			if ifid != outIF {
+				Fixed.Intra[common.IFIDType(ifid)] = g.Fixed(ifid, outIF)
+			}
+			if ifid == outIF || g.isPeer[ifid] {
+				Fixed.Inter[common.IFIDType(ifid)] =
+					g.Fixed(ifid, g.links[ifid])
+			}
+		}
+	}
+
+
+	Affected := staticinfo.AffectedInfo{}
+	if outIF != 0 {
+		Affected.Intra = make(map[common.IFIDType]uint64)
+		Affected.Inter = make(map[common.IFIDType]uint64)
+		for ifid := range as.IFIDs {
+			if ifid != outIF {
+				Affected.Intra[common.IFIDType(ifid)] = g.Affected(ifid, outIF)
+			}
+			if ifid == outIF || g.isPeer[ifid] {
+				Affected.Inter[common.IFIDType(ifid)] =
+					g.Affected(ifid, g.links[ifid])
+			}
+		}
+	}
+
 	geo := make(staticinfo.GeoInfo)
 	for ifid := range as.IFIDs {
 		geo[common.IFIDType(ifid)] = g.GeoCoordinates(ifid)
@@ -716,6 +793,9 @@ func generateStaticInfo(g *Graph, ia addr.IA, inIF, outIF uint16) *staticinfo.Ex
 		Bandwidth:       bandwidth,
 		CarbonIntensity: carbonIntensity,
 		Sbom:			 Sbom,
+		Vuln:			 Vuln,
+		Fixed:			 Fixed,
+		Affected:		 Affected,
 		Geo:             geo,
 		LinkType:        linkType,
 		InternalHops:    internalHops,

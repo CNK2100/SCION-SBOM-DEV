@@ -76,6 +76,39 @@ func TestRoundtripStaticInfoExtension(t *testing.T) {
 				},
 			},
 		},
+		"Vuln": {
+			Vuln: staticinfo.VulnInfo{
+				Intra: map[common.IFIDType]uint64{
+					10: 1, // 1g/TB
+					11: 1000,
+				},
+				Inter: map[common.IFIDType]uint64{
+					11: 550,
+				},
+			},
+		},
+		"Fixed": {
+			Fixed: staticinfo.FixedInfo{
+				Intra: map[common.IFIDType]uint64{
+					10: 1, // 1g/TB
+					11: 1000,
+				},
+				Inter: map[common.IFIDType]uint64{
+					11: 550,
+				},
+			},
+		},
+		"Affected": {
+			Affected: staticinfo.AffectedInfo{
+				Intra: map[common.IFIDType]uint64{
+					10: 1, // 1g/TB
+					11: 1000,
+				},
+				Inter: map[common.IFIDType]uint64{
+					11: 550,
+				},
+			},
+		},
 		"link_type": {
 			LinkType: staticinfo.LinkTypeInfo{
 				1: staticinfo.LinkTypeDirect,

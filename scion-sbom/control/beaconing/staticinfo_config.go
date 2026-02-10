@@ -48,6 +48,23 @@ type InterfaceSboms struct {
 	Intra map[common.IFIDType]uint64 `json:"Intra"`
 }
 
+type InterfaceVulns struct {
+	Inter uint64                     `json:"Inter"`
+	Intra map[common.IFIDType]uint64 `json:"Intra"`
+}
+
+type InterfaceFixeds struct {
+	Inter uint64                     `json:"Inter"`
+	Intra map[common.IFIDType]uint64 `json:"Intra"`
+}
+
+type InterfaceAffecteds struct {
+	Inter uint64                     `json:"Inter"`
+	Intra map[common.IFIDType]uint64 `json:"Intra"`
+}
+
+
+
 type InterfaceGeodata struct {
 	Longitude float32 `json:"Longitude"`
 	Latitude  float32 `json:"Latitude"`
@@ -93,6 +110,9 @@ type StaticInfoCfg struct {
 	Bandwidth       map[common.IFIDType]InterfaceBandwidths        `json:"Bandwidth"`
 	CarbonIntensity map[common.IFIDType]InterfaceCarbonIntensities `json:"CarbonIntensity"`
 	Sbom            map[common.IFIDType]InterfaceSboms             `json:"Sbom"`
+	Vuln            map[common.IFIDType]InterfaceVulns             `json:"Vuln"`
+	Fixed           map[common.IFIDType]InterfaceFixeds            `json:"Fixed"`
+	Affected        map[common.IFIDType]InterfaceAffecteds         `json:"Affected"`
 	LinkType        map[common.IFIDType]LinkType                   `json:"LinkType"`
 	Geo             map[common.IFIDType]InterfaceGeodata           `json:"Geo"`
 	Hops            map[common.IFIDType]InterfaceHops              `json:"Hops"`
@@ -140,6 +160,19 @@ func (cfg *StaticInfoCfg) clean() {
 	for _, s := range cfg.Sbom {
 		delete(s.Intra, 0)
 	}
+	delete(cfg.Vuln, 0)
+	for _, s := range cfg.Vuln {
+		delete(s.Intra, 0)
+	}
+	delete(cfg.Fixed, 0)
+	for _, s := range cfg.Fixed {
+		delete(s.Intra, 0)
+	}
+	delete(cfg.Affected, 0)
+	for _, s := range cfg.Affected {
+		delete(s.Intra, 0)
+	}
+
 	delete(cfg.LinkType, 0)
 	delete(cfg.Geo, 0)
 	delete(cfg.Hops, 0)
@@ -151,6 +184,9 @@ func (cfg *StaticInfoCfg) clean() {
 	symmetrizeBandwidth(cfg.Bandwidth)
 	symmetrizeCarbonIntensity(cfg.CarbonIntensity)
 	symmetrizeSbom(cfg.Sbom)
+	symmetrizeVuln(cfg.Vuln)
+	symmetrizeFixed(cfg.Fixed)
+	symmetrizeAffected(cfg.Affected)
 	symmetrizeHops(cfg.Hops)
 }
 
@@ -246,6 +282,76 @@ func symmetrizeSbom(Sbom map[common.IFIDType]InterfaceSboms) {
 	}
 }
 
+// symmetrizeVuln makes the Intra Vuln values symmetric
+func symmetrizeVuln(Vuln map[common.IFIDType]InterfaceVulns) {
+	for i, sub := range Vuln {
+		delete(sub.Intra, i) // Remove loopy entry
+		for j, v := range sub.Intra {
+			if _, ok := Vuln[j]; !ok {
+				continue
+			}
+			if Vuln[j].Intra == nil {
+				Vuln[j] = InterfaceVulns{
+					Inter: Vuln[j].Inter,
+					Intra: make(map[common.IFIDType]uint64),
+				}
+			}
+			vTransposed, ok := Vuln[j].Intra[i]
+			// Set if not specified or pick more conservative value if both are specified
+			if !ok || v < vTransposed {
+				Vuln[j].Intra[i] = v
+			}
+		}
+	}
+}
+
+// symmetrizeFixed makes the Intra Fixed values symmetric
+func symmetrizeFixed(Fixed map[common.IFIDType]InterfaceFixeds) {
+	for i, sub := range Fixed {
+		delete(sub.Intra, i) // Remove loopy entry
+		for j, v := range sub.Intra {
+			if _, ok := Fixed[j]; !ok {
+				continue
+			}
+			if Fixed[j].Intra == nil {
+				Fixed[j] = InterfaceFixeds{
+					Inter: Fixed[j].Inter,
+					Intra: make(map[common.IFIDType]uint64),
+				}
+			}
+			vTransposed, ok := Fixed[j].Intra[i]
+			// Set if not specified or pick more conservative value if both are specified
+			if !ok || v < vTransposed {
+				Fixed[j].Intra[i] = v
+			}
+		}
+	}
+}
+
+// symmetrizeAffected makes the Intra Affected values symmetric
+func symmetrizeAffected(Affected map[common.IFIDType]InterfaceAffecteds) {
+	for i, sub := range Affected {
+		delete(sub.Intra, i) // Remove loopy entry
+		for j, v := range sub.Intra {
+			if _, ok := Affected[j]; !ok {
+				continue
+			}
+			if Affected[j].Intra == nil {
+				Affected[j] = InterfaceAffecteds{
+					Inter: Affected[j].Inter,
+					Intra: make(map[common.IFIDType]uint64),
+				}
+			}
+			vTransposed, ok := Affected[j].Intra[i]
+			// Set if not specified or pick more conservative value if both are specified
+			if !ok || v < vTransposed {
+				Affected[j].Intra[i] = v
+			}
+		}
+	}
+}
+
+
 // symmetrizeHops makes the Intra hops values symmetric
 func symmetrizeHops(hops map[common.IFIDType]InterfaceHops) {
 	for i, sub := range hops {
@@ -282,6 +388,9 @@ func (cfg StaticInfoCfg) generate(ifType map[common.IFIDType]topology.LinkType,
 		Bandwidth:       cfg.generateBandwidth(ifType, ingress, egress),
 		CarbonIntensity: cfg.generateCarbonIntensity(ifType, ingress, egress),
 		Sbom:            cfg.generateSbom(ifType, ingress, egress),
+		Vuln:            cfg.generateVuln(ifType, ingress, egress),
+		Fixed:           cfg.generateFixed(ifType, ingress, egress),
+		Affected:        cfg.generateAffected(ifType, ingress, egress),
 		Geo:             cfg.generateGeo(ifType, ingress, egress),
 		LinkType:        cfg.generateLinkType(ifType, egress),
 		InternalHops:    cfg.generateInternalHops(ifType, ingress, egress),
@@ -385,6 +494,94 @@ func (cfg StaticInfoCfg) generateSbom(ifType map[common.IFIDType]topology.LinkTy
 	}
 	return si
 }
+
+// generateVuln creates the VulnInfo by extracting the relevant values
+// from the config.
+func (cfg StaticInfoCfg) generateVuln(ifType map[common.IFIDType]topology.LinkType,
+	ingress, egress common.IFIDType) staticinfo.VulnInfo {
+
+	si := staticinfo.VulnInfo{
+		Intra: make(map[common.IFIDType]uint64),
+		Inter: make(map[common.IFIDType]uint64),
+	}
+	
+	for ifid, v := range cfg.Vuln[egress].Intra {
+		if includeIntraInfo(ifType, ifid, ingress, egress) {
+			si.Intra[ifid] = v
+		}
+	}
+	for ifid, v := range cfg.Vuln {
+		t := ifType[ifid]
+		if ifid == egress || t == topology.Peer {
+			si.Inter[ifid] = v.Inter
+		}
+	}
+	// Return empty VulnInfo if no data (matching other fields' behavior)
+	if len(si.Intra) == 0 && len(si.Inter) == 0 {
+		return staticinfo.VulnInfo{}
+	}
+	return si
+}
+
+// generateFixed creates the FixedInfo by extracting the relevant values
+// from the config.
+func (cfg StaticInfoCfg) generateFixed(ifType map[common.IFIDType]topology.LinkType,
+	ingress, egress common.IFIDType) staticinfo.FixedInfo {
+
+	si := staticinfo.FixedInfo{
+		Intra: make(map[common.IFIDType]uint64),
+		Inter: make(map[common.IFIDType]uint64),
+	}
+	
+	for ifid, v := range cfg.Fixed[egress].Intra {
+		if includeIntraInfo(ifType, ifid, ingress, egress) {
+			si.Intra[ifid] = v
+		}
+	}
+	for ifid, v := range cfg.Fixed {
+		t := ifType[ifid]
+		if ifid == egress || t == topology.Peer {
+			si.Inter[ifid] = v.Inter
+		}
+	}
+	// Return empty AffectedInfo if no data (matching other fields' behavior)
+	if len(si.Intra) == 0 && len(si.Inter) == 0 {
+		return staticinfo.FixedInfo{}
+	}
+	return si
+}
+
+// generateAffected creates the AffectedInfo by extracting the relevant values
+// from the config.
+func (cfg StaticInfoCfg) generateAffected(ifType map[common.IFIDType]topology.LinkType,
+	ingress, egress common.IFIDType) staticinfo.AffectedInfo {
+
+	si := staticinfo.AffectedInfo{
+		Intra: make(map[common.IFIDType]uint64),
+		Inter: make(map[common.IFIDType]uint64),
+	}
+	
+	for ifid, v := range cfg.Affected[egress].Intra {
+		if includeIntraInfo(ifType, ifid, ingress, egress) {
+			si.Intra[ifid] = v
+		}
+	}
+	for ifid, v := range cfg.Affected {
+		t := ifType[ifid]
+		if ifid == egress || t == topology.Peer {
+			si.Inter[ifid] = v.Inter
+		}
+	}
+	// Return empty AffectedInfo if no data (matching other fields' behavior)
+	if len(si.Intra) == 0 && len(si.Inter) == 0 {
+		return staticinfo.AffectedInfo{}
+	}
+	return si
+}
+
+
+
+
 
 // generateLinkType creates the LinkTypeInfo by extracting the relevant values from
 // the config.

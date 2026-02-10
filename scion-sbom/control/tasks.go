@@ -45,6 +45,9 @@ type TasksConfig struct {
 	IA         addr.IA
 	MTU        uint16
 	Sbom 	   uint64
+	Vuln 	   uint64
+	Fixed 	   uint64
+	Affected 	   uint64
 	NextHopper interface {
 		UnderlayNextHop(uint16) *net.UDPAddr
 	}
@@ -87,7 +90,7 @@ func (t *TasksConfig) Originator() *periodic.Runner {
 		return nil
 	}
 	s := &beaconing.Originator{
-		Extender: t.extender("originator", t.IA, t.MTU, t.Sbom, func() uint8 {
+		Extender: t.extender("originator", t.IA, t.MTU, t.Sbom, t.Vuln, t.Fixed, t.Affected, func() uint8 {
 			return t.BeaconStore.MaxExpTime(beacon.PropPolicy)
 		}),
 		SenderFactory:         t.BeaconSenderFactory,
@@ -105,7 +108,7 @@ func (t *TasksConfig) Originator() *periodic.Runner {
 // Propagator starts a periodic beacon propagation task.
 func (t *TasksConfig) Propagator() *periodic.Runner {
 	p := &beaconing.Propagator{
-		Extender: t.extender("propagator", t.IA, t.MTU, t.Sbom, func() uint8 {
+		Extender: t.extender("propagator", t.IA, t.MTU, t.Sbom, t.Vuln, t.Fixed, t.Affected, func() uint8 {
 			return t.BeaconStore.MaxExpTime(beacon.PropPolicy)
 		}),
 		SenderFactory:         t.BeaconSenderFactory,
@@ -150,7 +153,7 @@ func (t *TasksConfig) segmentWriter(segType seg.Type,
 			Registered:     registered,
 			Type:           segType,
 			Intfs:          t.AllInterfaces,
-			Extender: t.extender("registrar", t.IA, t.MTU, t.Sbom, func() uint8 {
+			Extender: t.extender("registrar", t.IA, t.MTU, t.Sbom, t.Vuln, t.Fixed, t.Affected, func() uint8 {
 				return t.BeaconStore.MaxExpTime(policyType)
 			}),
 			Store: &seghandler.DefaultStorage{PathDB: t.PathDB},
@@ -161,7 +164,7 @@ func (t *TasksConfig) segmentWriter(segType seg.Type,
 			InternalErrors: metrics.CounterWith(internalErr, "seg_type", segType.String()),
 			Registered:     registered,
 			Intfs:          t.AllInterfaces,
-			Extender: t.extender("registrar", t.IA, t.MTU, t.Sbom, func() uint8 {
+			Extender: t.extender("registrar", t.IA, t.MTU, t.Sbom, t.Vuln, t.Fixed, t.Affected, func() uint8 {
 				return t.BeaconStore.MaxExpTime(policyType)
 			}),
 			RPC: t.HiddenPathRegistrationCfg.RPC,
@@ -180,7 +183,7 @@ func (t *TasksConfig) segmentWriter(segType seg.Type,
 			Registered:     registered,
 			Type:           segType,
 			Intfs:          t.AllInterfaces,
-			Extender: t.extender("registrar", t.IA, t.MTU, t.Sbom, func() uint8 {
+			Extender: t.extender("registrar", t.IA, t.MTU, t.Sbom, t.Vuln, t.Fixed, t.Affected, func() uint8 {
 				return t.BeaconStore.MaxExpTime(policyType)
 			}),
 			RPC: t.SegmentRegister,
@@ -209,6 +212,9 @@ func (t *TasksConfig) extender(
 	ia addr.IA,
 	mtu uint16,
 	Sbom uint64,
+	Vuln uint64,
+	Fixed uint64,
+	Affected uint64,
 	maxExp func() uint8,
 ) beaconing.Extender {
 	return &beaconing.DefaultExtender{
@@ -218,6 +224,9 @@ func (t *TasksConfig) extender(
 		Intfs:      t.AllInterfaces,
 		MTU:        mtu,
 		Sbom: 	 	t.Sbom,
+		Vuln: 	 	t.Vuln,
+		Fixed: 	 	t.Fixed,
+		Affected: 	t.Affected,
 		MaxExpTime: func() uint8 { return maxExp() },
 		StaticInfo: t.StaticInfo,
 		Fabrid:     t.Fabrid,

@@ -88,6 +88,11 @@ type DefaultExtender struct {
 	// SegmentExpirationDeficient is a gauge that is set to 1 if the expiration time of the segment
 	// is below the maximum expiration time. This happens when the signer expiration time is lower
 	// than the maximum segment expiration time.
+	Vuln uint64
+	Fixed uint64
+	Affected uint64
+
+
 	SegmentExpirationDeficient metrics.Gauge
 	// Fabrid includes FABRID policy maps into the PCBs.
 	Fabrid *fabrid.FabridManager

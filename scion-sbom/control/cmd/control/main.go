@@ -780,10 +780,16 @@ func realMain(ctx context.Context) error {
 		log.Info("No static info file found. Static info settings disabled.", "err", err)
 		staticInfo = &beaconing.StaticInfoCfg{
             Sbom: make(map[common.IFIDType]beaconing.InterfaceSboms),
+			Vuln: make(map[common.IFIDType]beaconing.InterfaceVulns),
+			Fixed: make(map[common.IFIDType]beaconing.InterfaceFixeds),
+			Affected: make(map[common.IFIDType]beaconing.InterfaceAffecteds),
         }
 	}
 	for ifid, intf := range topo.InterfaceInfoMap() {
 		sbomRaw := uint64(intf.Sbom)
+		vulnRaw := uint64(intf.Vuln)
+		fixedRaw := uint64(intf.Fixed)
+		affectedRaw := uint64(intf.Affected)
         
 		// Sanity check: SBOM should never be negative, so if we see a huge value, it's likely an underflow from a negative number.
         const normalLimit uint64 = 4294967295 // Max Uint32
@@ -801,6 +807,57 @@ func realMain(ctx context.Context) error {
             if _, ok := staticInfo.Sbom[ifid]; !ok {
                 staticInfo.Sbom[ifid] = beaconing.InterfaceSboms{
                     Inter: finalSbom,
+                    Intra: make(map[common.IFIDType]uint64),
+                }
+            }
+        }
+
+		var finalVuln uint64
+        if vulnRaw > normalLimit {
+            log.Error("Vuln underflow detected! Value rejected.", "ifid", ifid, "raw", vulnRaw)
+            finalVuln = 0 // Reject and set to 0
+        } else {
+            finalVuln = vulnRaw
+        }
+
+        if finalVuln > 0 {
+            if _, ok := staticInfo.Vuln[ifid]; !ok {
+                staticInfo.Vuln[ifid] = beaconing.InterfaceVulns{
+                    Inter: finalVuln,
+                    Intra: make(map[common.IFIDType]uint64),
+                }
+            }
+        }
+
+		var finalFixed uint64
+        if fixedRaw > normalLimit {
+            log.Error("Fixed underflow detected! Value rejected.", "ifid", ifid, "raw", fixedRaw)
+            finalFixed = 0 // Reject and set to 0
+        } else {
+            finalFixed = fixedRaw
+        }
+
+        if finalFixed > 0 {
+            if _, ok := staticInfo.Fixed[ifid]; !ok {
+                staticInfo.Fixed[ifid] = beaconing.InterfaceFixeds{
+                    Inter: finalFixed,
+                    Intra: make(map[common.IFIDType]uint64),
+                }
+            }
+        }
+
+		var finalAffected uint64
+        if affectedRaw > normalLimit {
+            log.Error("Affected underflow detected! Value rejected.", "ifid", ifid, "raw", affectedRaw)
+            finalAffected = 0 // Reject and set to 0
+        } else {
+            finalAffected = affectedRaw
+        }
+
+        if finalAffected > 0 {
+            if _, ok := staticInfo.Affected[ifid]; !ok {
+                staticInfo.Affected[ifid] = beaconing.InterfaceAffecteds{
+                    Inter: finalAffected,
                     Intra: make(map[common.IFIDType]uint64),
                 }
             }

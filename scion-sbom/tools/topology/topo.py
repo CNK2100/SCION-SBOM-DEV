@@ -251,6 +251,9 @@ class TopoGenerator(object):
             'isd_as': str(topo_id),
             'mtu': mtu,
             'Sbom': as_conf.get('Sbom', -1),
+            'Vuln': as_conf.get('Vuln', -1),
+            'Fixed': as_conf.get('Fixed', -1),
+            'Affected': as_conf.get('Affected', -1),
             # XXX(JordiSubira): This key is used internally later on, to decide
             # whether to create a dispatcher container collocated with the tester
             # container.
@@ -346,6 +349,9 @@ class TopoGenerator(object):
             'link_to': link_to,
             'mtu': attrs.get('mtu', self.args.default_mtu),
             'Sbom': attrs.get('Sbom', -1),
+            'Vuln': attrs.get('Vuln', -1),
+            'Fixed': attrs.get('Fixed', -1),
+            'Affected': attrs.get('Affected', -1),
         }
         if link_to == 'peer':
             intf['remote_interface_id'] = r_ifid

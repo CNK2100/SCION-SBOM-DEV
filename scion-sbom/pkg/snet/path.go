@@ -39,6 +39,9 @@ const (
 	// SbomUnset is the default value for an SBOM entry in PathMetadata for
 	// which no value was announced.
 	SbomUnset int64 = -1
+	VulnUnset int64 = -1
+	FixedUnset int64 = -1
+	AffectedUnset int64 = -1
 )
 
 // DataplanePath is an abstract representation of a SCION dataplane path.
@@ -138,11 +141,14 @@ type PathMetadata struct {
 	CarbonIntensity []int64
 
 	// Sbom lists the SBOM (Software Bill of Materials) score between any two consecutive
-	// interfaces. Values range from 0 to 20000.
+	// interfaces. Values range from 0 to any.
 	// Entry i describes the value between interfaces i and i+1.
 	// A negative value (SbomUnset) indicates that the AS did not
 	// announce a value for this hop.
 	Sbom []uint64
+	Vuln []uint64
+	Fixed []uint64
+	Affected []uint64
 
 	// Geo lists the geographical position of the border routers along the path.
 	// Entry i describes the position of the router for interface i.
@@ -196,6 +202,9 @@ func (pm *PathMetadata) Copy() *PathMetadata {
 		Bandwidth:       append(pm.Bandwidth[:0:0], pm.Bandwidth...),
 		CarbonIntensity: append(pm.CarbonIntensity[:0:0], pm.CarbonIntensity...),
 		Sbom:            append(pm.Sbom[:0:0], pm.Sbom...),
+		Vuln:            append(pm.Vuln[:0:0], pm.Vuln...),
+		Fixed:           append(pm.Fixed[:0:0], pm.Fixed...),
+		Affected:        append(pm.Affected[:0:0], pm.Affected...),
 		Geo:             append(pm.Geo[:0:0], pm.Geo...),
 		LinkType:        append(pm.LinkType[:0:0], pm.LinkType...),
 		InternalHops:    append(pm.InternalHops[:0:0], pm.InternalHops...),
