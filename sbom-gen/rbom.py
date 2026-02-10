@@ -32,7 +32,7 @@ def generate_sbom(target="/"):
         target = f"dir:{target}"
     
     print(f"  Running: syft {target} -o cyclonedx-json")
-    print("  (This may take 2-5 minutes...)")
+    print("  (This may take 5-10 minutes...)")
     
     # Run Syft
     cmd = ["syft", target, "-o", "cyclonedx-json", "-q"]
@@ -62,8 +62,8 @@ def generate_sbom(target="/"):
 
 def run_grype_scan(sbom_file, output_file):
     """Run Grype scan on SBOM and generate CSV report"""
-    print("🔍 Running Grype vulnerability scan...")
-    print(f"  SBOM: {sbom_file}")
+    print("  Running Grype vulnerability scan...")
+    print(f" SBOM: {sbom_file}")
     
     # Check if Grype is installed
     try:
@@ -75,7 +75,7 @@ def run_grype_scan(sbom_file, output_file):
     
     # Run Grype
     print("  Scanning...")
-    print("  (This may take 3-10 minutes...)")
+    print("  (This may take 5-10 minutes...)")
     cmd = ["grype", f"sbom:{sbom_file}", "-o", "json", "-q"]
     
     try:
@@ -131,7 +131,8 @@ def convert_grype_to_csv(grype_data, csv_file):
 
 def process_vex(grype_csv, vex_csv):
     """Process Grype CSV through VEX analysis"""
-    print(" Processing through VEX databases...")
+    print()
+    print("[*] Processing through VEX databases...")
     
     vex_records = []
     
@@ -142,7 +143,7 @@ def process_vex(grype_csv, vex_csv):
         for row in reader:
             count += 1
             # if count % 100 == 0:
-            if count % 2000 == 0:
+            if count % 10000 == 0:
                 print(f"  Processed: {count} vulnerabilities")
             
             # Extract fields
@@ -188,6 +189,7 @@ def process_vex(grype_csv, vex_csv):
         writer.writeheader()
         writer.writerows(vex_records)
     
+    print()
     print(f"  VEX analysis complete: {count} vulnerabilities processed")
     print(f"  VEX report: {vex_csv}")
     return True
@@ -362,7 +364,7 @@ def calculate_security_score(vex_csv):
 [*] SECURITY GRADE: {grade}
 [*] RISK LEVEL: {risk_level}
 
-📦 Total Vulnerabilities: {total_vulns}
+[*] Total Vulnerabilities: {total_vulns}
   🔴 Critical: {counts['critical']}
   🟠 High: {counts['high']}
   🟡 Medium: {counts['medium']}
@@ -370,14 +372,14 @@ def calculate_security_score(vex_csv):
   ⚪ Negligible: {counts['negligible']}
   ❓ Unknown: {counts['unknown']}
 
-📋 VEX Status Analysis:
+[*] VEX Status Analysis:
   ✅ Fixed: {counts['fixed']} ({counts['fixed']/total_vulns*100:.1f}%)
   ⚠️  Affected: {counts['affected']} ({counts['affected']/total_vulns*100:.1f}%)
   🔍 Under Investigation: {counts['under_investigation']} ({counts['under_investigation']/total_vulns*100:.1f}%)
 
-⚖️  Average CVSS Score: {avg_cvss:.2f}/10.0
-⚖️  Weighted Risk Score: {weighted_risk:.2f}
-📅 Scan Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+[*]  Average CVSS Score: {avg_cvss:.2f}/10.0
+[*]  Weighted Risk Score: {weighted_risk:.2f}
+[*] Scan Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 Report Files:
   - VEX Report: {vex_csv}
@@ -431,7 +433,7 @@ def generate_scion_config(score_file):
 
 def main():
     print("╔═══════════════════════════════════════════════════════════════════════╗")
-    print("║                    RBOM - Completed                                   ║")
+    print("║                                RBOM                                   ║")
     print("║                                                                       ║")
     print("╚═══════════════════════════════════════════════════════════════════════╝")
     print()

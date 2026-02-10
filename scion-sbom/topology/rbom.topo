@@ -1,0 +1,18 @@
+--- # SBOM Topology, IPv4 Only
+ASes:
+  "1-ff00:0:110":
+    core: true
+    voting: true
+    authoritative: true
+    issuing: true
+    mtu: 1400
+    Sbom: 272525
+  "1-ff00:0:111":
+    cert_issuer: 1-ff00:0:110
+    Sbom: 210525
+  "1-ff00:0:112":
+    cert_issuer: 1-ff00:0:110
+    Sbom: 172525
+links:
+  - {a: "1-ff00:0:110#1", b: "1-ff00:0:111#41", linkAtoB: CHILD, mtu: 1280, Sbom: 272525}
+  - {a: "1-ff00:0:110#2", b: "1-ff00:0:112#1", linkAtoB: CHILD, bw: 500, Sbom: 272525}

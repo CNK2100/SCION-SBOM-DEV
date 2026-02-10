@@ -58,6 +58,8 @@ sudo apt install python3-pip
 
 pip install pyyaml toml plumbum
 
+sudo apt-get install -y libsqlite3-dev gcc
+
 sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r)
 sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
 
@@ -297,7 +299,7 @@ sudo ./scion.sh bazel-remote
 ```
 Wait for 3 sec and if you see no container running, then try again above command. 
 
-Below output is the output:
+Below  is the output:
 ```
  ./scion.sh bazel-remote
 WARN[0000] /bazel-remote.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
@@ -306,7 +308,7 @@ WARN[0000] No services to build
  ✔ Container bazel-remote-cache Running
 ``` 
 
-Check SCION documentation to either build all the packages or  build only needed SCION service.
+Check SCION documentation to either build all the packages or  build only needed SCION services.
 
 https://docs.scion.org/en/latest/dev/build.html
 
@@ -332,7 +334,7 @@ make test-integration
 cd ~
 cd scion-sbom
 # Below initial command will take  2 to 5 min depending on your specs.
-# Next time it will run faster
+# Next time it will run faster.
 
 make docker-images
 
@@ -341,7 +343,7 @@ Then run again make docker-images
 
 ## Run a desired Scion topology
 
-./scion.sh topology -c topology/sbom.topo 
+./scion.sh topology -c topology/rbom-2.topo 
 ./scion.sh run
 ```
 Testing the SCION network
@@ -382,8 +384,11 @@ Available paths to 1-ff00:0:111
     MTU: 1280
     NextHop: 127.0.0.25:31012
     PQC-secured: true
-    Expires: 2026-02-02 19:38:09 +0000 UTC (5h57m33s)
-    Sbom: 5550
+    Expires: 2026-02-10 16:37:16 +0000 UTC (5h59m42s)
+    Sbom: 545050
+    Vuln: 154052
+    Fixed: 83956
+    Affected: 69954
     SupportsEPIC: false
     Status: alive
     LocalIP: 127.0.0.1
@@ -430,5 +435,12 @@ cd ..
 cd sbom-gen
 python3 ./rbom.py
 ```
-RBOM will generate an SBOM of the whole system; will conduct a vulnerability scanning; will provide VEX evaluation; and will generate a security score.
+RBOM will generate an SBOM of the whole system; will conduct a vulnerability scan; will provide VEX evaluation; and will generate a security score.
 Any needed attribute could be included in SCION AS information (e.g., SBOM as of above).
+
+## About
+
+This repository is maintained by Dr. Carlos. For reporting bugs, you can submit an issue to the GitHub repository.
+
+
+
