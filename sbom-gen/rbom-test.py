@@ -395,6 +395,11 @@ def calculate_security_score(vex_csv):
     affected = counts['affected']
 
     print(str(sbom,vuln,fixed,affected))
+    print(f"SBOM: {sbom} components ")
+    print(f"Vulnerabilities: {vuln} found ")
+    print(f"Fixed Vulnerabilities: {fixed} ")
+    print(f"Affected Vulnerabilities: {affected}  ")
+
     
     # Write text report
     text_report = f"""╔═══════════════════════════════════════════════════════════════════════╗
