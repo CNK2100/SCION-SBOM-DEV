@@ -146,7 +146,7 @@ def convert_grype_to_csv(grype_data, csv_file):
 def process_vex(grype_csv, vex_csv):
     """Process Grype CSV through VEX analysis"""
     print()
-    print("[*]  Processing through VEX databases...")
+    print("  [*] Processing through VEX databases...")
     
     vex_records = []
     
