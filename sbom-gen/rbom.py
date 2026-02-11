@@ -66,8 +66,8 @@ def generate_sbom(target="/"):
 def run_grype_scan(sbom_file, output_file):
     """Run Grype scan on SBOM and generate CSV report"""
     global component_count
-    print("[*] Running vulnerability scan...")
-    print(f"  	SBOM: {sbom_file}")
+    print("  [*] Running vulnerability scan...")
+    print(f"        SBOM: {sbom_file}")
     
     # Check if Grype is installed
     try:
@@ -83,7 +83,7 @@ def run_grype_scan(sbom_file, output_file):
 
     count = len(sbom.get('components', []))
     component_count = count
-    print(f"    Components: {count}")
+    print(f"        Components: {count}")
 
     
     # Run Grype
