@@ -317,6 +317,9 @@ Below "make" command will run for about 3 to 8 minutes depending on your PC spec
 ```
 make
 
+## proto files are used to create new *.pb.go files
+make protobuf   
+
 make test
 
 # Optional make test-integration. 
@@ -340,10 +343,21 @@ make docker-images
 
 ## if make docker-images does not run then run first ./scion.sh bazel-remote.
 Then run again make docker-images
+```
+### Run a desired Scion topology
 
-## Run a desired Scion topology
-
-./scion.sh topology -c topology/rbom-2.topo 
+```
+./scion.sh topology -c topology/tiny4.topo
+```
+### Adding StaticInfoConfig to ASes.
+The "staticInfoConfig.json" will be updated automatically after collecting SBOM & VEX info.
+https://docs.scion.org/en/latest/manuals/control.html#control-conf-path-metadata 
+```
+cd ..
+cp ./sbom-gen/staticInfoConfig.json ./scion-sbom/gen/ASff00_0_110/
+```
+### Start SCION
+```
 ./scion.sh run
 ```
 Testing the SCION network
@@ -357,7 +371,7 @@ If you want to see extended details for the command showpaths just add --extende
 bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
 
 ```
-Output with SBOM listed
+Output with SBOM, Vulnerabilities, Fixed, Affected
 ```
 bin/scion showpaths --extended --sciond $(./scion.sh sciond-addr 112) 1-ff00:0:110
 Available paths to 1-ff00:0:110
@@ -366,13 +380,19 @@ Available paths to 1-ff00:0:110
     MTU: 1400
     NextHop: 127.0.0.25:31012
     PQC-secured: true
-    Expires: 2026-02-02 19:38:09 +0000 UTC (5h59m21s)
-    Sbom: 3450
+    Expires: 2026-02-11 13:46:46 +0000 UTC (5h56m29s)
+    Latency: 40ms
+    CarbonIntensity: 400gCO2/TB
+    Sbom: 545050
+    Vuln: 77026
+    Fixed: 41978
+    Affected: 34977
+    Notes: [1-ff00:0:110: "asdf"]
     SupportsEPIC: false
     Status: alive
     LocalIP: 127.0.0.1
- 
 ```
+
 Testing the path from 112 to another AS 1-ff00:0:111 with different.
 SBOM values will update for this link.
 
@@ -384,11 +404,15 @@ Available paths to 1-ff00:0:111
     MTU: 1280
     NextHop: 127.0.0.25:31012
     PQC-secured: true
-    Expires: 2026-02-10 16:37:16 +0000 UTC (5h59m42s)
-    Sbom: 545050
-    Vuln: 154052
-    Fixed: 83956
-    Affected: 69954
+    Expires: 2026-02-11 13:46:46 +0000 UTC (5h56m16s)
+    Latency: 80ms
+    CarbonIntensity: 1480gCO2/TB
+    Sbom: 1635150
+    Vuln: 231078
+    Fixed: 125934
+    Affected: 104931
+    InternalHops: [1-ff00:0:110: 2]
+    Notes: [1-ff00:0:110: "asdf"]
     SupportsEPIC: false
     Status: alive
     LocalIP: 127.0.0.1
