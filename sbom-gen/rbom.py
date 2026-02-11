@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-RBOM 
-Generates SBOM if not present, then processes through VEX analysis
+RBOM Generates SBOM if not present, then processes through VEX analysis
 """
 
 import json
@@ -12,7 +11,7 @@ import os
 from datetime import datetime
 import math
 global component_count
-component_count = 272525 # Ubuntu 22
+component_count = 0  # on Ubuntu 22 after SBOM generation  component_count  is about  272525  
 
 def generate_sbom(target="/"):
     """Module 1: Generate SBOM using Syft"""
@@ -66,7 +65,8 @@ def generate_sbom(target="/"):
 
 def run_grype_scan(sbom_file, output_file):
     """Run Grype scan on SBOM and generate CSV report"""
-    print("  [*] Running vulnerability scan...")
+    global component_count
+    print("[*] Running vulnerability scan...")
     print(f"  	SBOM: {sbom_file}")
     
     # Check if Grype is installed
@@ -77,8 +77,18 @@ def run_grype_scan(sbom_file, output_file):
         print("   curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin")
         return False
     
+    # List Existing SBOM Components
+    with open('sbom.json') as f:
+        sbom = json.load(f)
+
+    count = len(sbom.get('components', []))
+    component_count = count
+    print(f"    Components: {count}")
+
+    
     # Run Grype
-    print("  Scanning...")
+    print()
+    print("Scanning...")
     print("  (This may take 5-10 minutes...)")
     cmd = ["grype", f"sbom:{sbom_file}", "-o", "json", "-q"]
     
@@ -341,7 +351,7 @@ def calculate_security_score(vex_csv):
         'overall_score': score,
         'grade': grade,
         'risk_level': risk_level,
-        'SBOM Components found': component_count,
+        'sbom components found': component_count,
         'total_vulnerabilities': total_vulns,
         'critical_count': counts['critical'],
         'high_count': counts['high'],
@@ -371,7 +381,7 @@ def calculate_security_score(vex_csv):
 [*] SECURITY GRADE: {grade}
 [*] RISK LEVEL: {risk_level}
 
-[*] SBOM Components found: {component_count}
+[*] SBOM components found: {component_count}
 [*] Total Vulnerabilities: {total_vulns}
   🔴 Critical: {counts['critical']}
   🟠 High: {counts['high']}
@@ -399,7 +409,7 @@ Report Files:
     
     with open('security-score.txt', 'w') as f:
         f.write(text_report)
-    print(f"\n  [*] SBOM Components found: {component_count}")
+    # print(f"\n  [*] SBOM components found: {component_count}")
     # print(f"\n  [*] Security Score: {score}/100 (Grade {grade})")
     print(f"  [*] Risk Level: {risk_level}")
     print(f"  [*] Vulnerabilities: Critical={counts['critical']}, High={counts['high']}, Medium={counts['medium']}, Low={counts['low']}")
@@ -507,8 +517,8 @@ def main():
     print("=" * 71)
     print()
     
-    grype_csv = 'grype-report.csv'
-    vex_csv = 'report.csv'
+    grype_csv = 'vuln-report-raw.csv'
+    vex_csv = 'vex-report.csv'
     
     if not run_grype_scan(sbom_file, grype_csv):
         sys.exit(1)
@@ -540,14 +550,15 @@ def main():
     print(" RBOM Completed Successfully!")
     print("=" * 71)
     print()
-    print(f"  SBOM Components found: {component_count}")
-    print("Generated Files:")
-    print(f"  SBOM:                   {sbom_file}")
-    print(f"  Vulnerability Report (raw):     {grype_csv}")
-    print(f"  VEX Report:             {vex_csv}")
-    print(f"  Security Score (JSON):  security-score.json")
-    print(f"  Security Score (text):  security-score.txt")
-    print(f"  SCION Config:           scion-config.json")
+    print(f"  [*] SBOM components found:          {component_count}")
+    print()
+    print("  [*] Generated Files:")
+    print(f"    SBOM:                         {sbom_file}")
+    print(f"    Vulnerability Report (raw):   {grype_csv}")
+    print(f"    VEX Report:                   {vex_csv}")
+    print(f"    Security Score (JSON):  security-score.json")
+    print(f"    Security Score (text):  security-score.txt")
+    print(f"    SCION Config:           scion-config.json")
     print()
 
 if __name__ == '__main__':
