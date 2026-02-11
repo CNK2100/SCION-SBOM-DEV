@@ -112,4 +112,6 @@ report.csv
 scion-config.json
 security-score.json
 security-score.txt
+vex-report.csv
+vuln-report-raw.csv
 

@@ -88,8 +88,8 @@ def run_grype_scan(sbom_file, output_file):
     
     # Run Grype
     print()
-    print("Scanning...")
-    print("  (This may take 5-10 minutes...)")
+    print("  Scanning...")
+    print("     (This may take 5-10 minutes...)")
     cmd = ["grype", f"sbom:{sbom_file}", "-o", "json", "-q"]
     
     try:
@@ -102,7 +102,7 @@ def run_grype_scan(sbom_file, output_file):
         
         # Convert to CSV
         convert_grype_to_csv(grype_data, output_file)
-        print(f"  Vulnerability scan complete: {output_file}")
+        print(f"    Vulnerability scan complete: {output_file}")
         return True
         
     except subprocess.CalledProcessError as e:
@@ -141,12 +141,12 @@ def convert_grype_to_csv(grype_data, csv_file):
                 
                 writer.writerow([name, version, fixed_in, pkg_type, vuln_id, severity, url])
     
-    print(f" Vulnerability report: {csv_file}")
+    print(f"    Vulnerability report conversion JSON to CSV format: {csv_file}")
 
 def process_vex(grype_csv, vex_csv):
     """Process Grype CSV through VEX analysis"""
     print()
-    print("[*] Processing through VEX databases...")
+    print("[*]  Processing through VEX databases...")
     
     vex_records = []
     
@@ -158,7 +158,7 @@ def process_vex(grype_csv, vex_csv):
             count += 1
             # if count % 100 == 0:
             if count % 10000 == 0:
-                print(f"  Processed: {count} vulnerabilities")
+                print(f"    Processed: {count} vulnerabilities")
             
             # Extract fields
             name = row['Name']
@@ -420,7 +420,7 @@ Report Files:
 def generate_scion_config(score_file):
     """Generate SCION configuration"""
     global component_count
-    print("[*] Generating SCION network configuration...")
+    print("  [*] Generating SCION network configuration...")
     
     with open(score_file, 'r') as f:
         score_data = json.load(f)
@@ -446,9 +446,9 @@ def generate_scion_config(score_file):
     	print()
         # print(f"  Score meets requirements")
     else:
-        print(f"  WARNING: Score below minimum threshold!")
+        print(f"    WARNING: Score below minimum threshold!")
     
-    print(f"  SCION config: scion-config.json\n")
+    print(f"    SCION config: scion-config.json\n")
     return True
 
 def main():
@@ -556,9 +556,9 @@ def main():
     print(f"    SBOM:                         {sbom_file}")
     print(f"    Vulnerability Report (raw):   {grype_csv}")
     print(f"    VEX Report:                   {vex_csv}")
-    print(f"    Security Score (JSON):  security-score.json")
-    print(f"    Security Score (text):  security-score.txt")
-    print(f"    SCION Config:           scion-config.json")
+    print(f"    Security Score (JSON):        security-score.json")
+    print(f"    Security Score (text):        security-score.txt")
+    print(f"    SCION Config:                 scion-config.json")
     print()
 
 if __name__ == '__main__':
