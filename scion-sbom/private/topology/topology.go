@@ -67,10 +67,7 @@ type (
 		MTU                 int
 		DispatchedPortStart uint16
 		DispatchedPortEnd   uint16
-		Sbom                uint64
-		Vuln                uint64
-		Fixed               uint64
-		Affected            uint64
+
 		BR        map[string]BRInfo
 		IFInfoMap IfInfoMap
 
@@ -120,10 +117,6 @@ type (
 		IA           addr.IA
 		LinkType     LinkType
 		MTU          int
-		Sbom         uint64
-		Vuln         uint64
-		Fixed        uint64
-		Affected     uint64
 		BFD          BFD
 	}
 
@@ -288,10 +281,6 @@ func (t *RWTopology) populateBR(raw *jsontopo.Topology) error {
 				BRName:       name,
 				InternalAddr: intAddr,
 				MTU:          rawIntf.MTU,
-				Sbom:         uint64(rawIntf.Sbom),
-				Vuln:         uint64(rawIntf.Vuln),
-				Fixed:        uint64(rawIntf.Fixed),
-				Affected:     uint64(rawIntf.Affected),
 			}
 			if ifinfo.IA, err = addr.ParseIA(rawIntf.IA); err != nil {
 				return err

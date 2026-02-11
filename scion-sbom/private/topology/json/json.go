@@ -75,10 +75,6 @@ type Topology struct {
 	TimestampHuman   string `json:"timestamp_human,omitempty"`
 	IA               string `json:"isd_as"`
 	MTU              int    `json:"mtu"`
-	Sbom             int64  `json:"Sbom"`
-	Vuln             int64  `json:"Vuln"`
-	Fixed            int64  `json:"Fixed"`
-	Affected         int64  `json:"Affected"`
 	EndhostPortRange string `json:"dispatched_ports"`
 	// Attributes specify whether this is a core AS or not.
 	Attributes          Attributes              `json:"attributes"`
@@ -116,10 +112,6 @@ type BRInterface struct {
 	IA         string          `json:"isd_as"`
 	LinkTo     string          `json:"link_to"`
 	MTU        int             `json:"mtu"`
-	Sbom       int64           `json:"Sbom"`
-	Vuln       int64           `json:"Vuln"`
-	Fixed      int64           `json:"Fixed"`
-	Affected   int64           `json:"Affected"`
 	BFD        *BFD            `json:"bfd,omitempty"`
 	RemoteIFID common.IFIDType `json:"remote_interface_id,omitempty"`
 }
