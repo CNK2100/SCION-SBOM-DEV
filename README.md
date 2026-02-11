@@ -317,6 +317,9 @@ Below "make" command will run for about 3 to 8 minutes depending on your PC spec
 ```
 make
 
+## proto files are used to create new *.pb.go files
+make protobuf   
+
 make test
 
 # Optional make test-integration. 
