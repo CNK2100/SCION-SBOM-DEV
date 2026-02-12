@@ -45,7 +45,7 @@ def generate_sbom(target="/"):
     
     print("    Generating SBOM of target...")
     # print(f"  Running: syft {target} -o cyclonedx-json")
-    print("      (This may take 5-15 minutes for scanning the whole Linux system...)")
+    print("      (This may take 20-35 minutes for scanning the whole Linux system...)")
     print()
     
     # Run Syft
