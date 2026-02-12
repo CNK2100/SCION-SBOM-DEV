@@ -68,7 +68,8 @@ def generate_sbom(target="/"):
         return True
         
     except subprocess.CalledProcessError as e:
-        print(f" Syft scan failed: {e.stderr}")
+        print(f" SBOM generation failed: {e.stderr}")
+        print(e.stderr)
         return False
     except Exception as e:
         print(f" Error: {e}")
