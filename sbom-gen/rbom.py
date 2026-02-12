@@ -26,9 +26,9 @@ sbom = 0
 def generate_sbom(target="/"):
     """  Module 1: Generate SBOM using Syft"""
     global component_count
-    print("SBOM Gen...")
+    print("  SBOM Gen...")
     # print("───────────────────────────────────────────────────────────────────────")
-    print(f"  Target: {target}")
+    print(f"    Target: {target}")
     
     # Check if Syft is installed
     try:
@@ -43,9 +43,9 @@ def generate_sbom(target="/"):
     if not target.startswith("dir:"):
         target = f"dir:{target}"
     
-    print("Generating SBOM of target...")
+    print("  Generating SBOM of target...")
     # print(f"  Running: syft {target} -o cyclonedx-json")
-    print("  (This may take 2-10 minutes...)")
+    print("    (This may take 5-15 minutes...)")
     print()
     
     # Run Syft
