@@ -592,6 +592,10 @@ def main():
     print("╚═══════════════════════════════════════════════════════════════════════╝")
     print()
     global component_count
+    print("=" * 71)
+    print("  MODULE 1: SBOM Generation")
+    print("=" * 71)
+    print()
     
     # Check for existing SBOM
     sbom_file = 'sbom.json'
@@ -637,10 +641,10 @@ def main():
             target = "/"
         print()
         
-        print("=" * 71)
-        print("  MODULE 1: SBOM Generation")
-        print("=" * 71)
-        print()
+        # print("=" * 71)
+        # print("  MODULE 1: SBOM Generation")
+        # print("=" * 71)
+        # print()
         
         if not generate_sbom(target):
             sys.exit(1)
