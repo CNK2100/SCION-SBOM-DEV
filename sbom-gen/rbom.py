@@ -65,6 +65,18 @@ def generate_sbom(target="/"):
         print(f"  SBOM generated: sbom.json")
         print(f"  Components found: {component_count}")
         print()
+        changefilepermission()
+        # # Get the actual user's ID (not root's) when running with sudo
+        # uid = int(os.environ.get('SUDO_UID', os.getuid()))
+        # gid = int(os.environ.get('SUDO_GID', os.getgid()))
+
+        # # Change ownership to current user
+        # os.chown('sbom.json', uid, gid)
+
+        # Set permissions to rwxrwxrwx (777)
+        # os.chmod('sbom.json', 0o777)
+
+        # print(f"Changed ownership and permissions for sbom.json")
         return True
         
     except subprocess.CalledProcessError as e:
@@ -74,6 +86,33 @@ def generate_sbom(target="/"):
     except Exception as e:
         print(f" Error: {e}")
         return False
+
+def changefilepermission():
+    # Check if sbom.json exists
+    if os.path.exists('sbom.json'):
+        # Get file stats
+        stat_info = os.stat('sbom.json')
+        
+        # Check if owned by root (UID 0)
+        if stat_info.st_uid == 0:
+            print("    File is owned by root, changing permissions...")
+            
+            # Get actual user's ID when running with sudo
+            uid = int(os.environ.get('SUDO_UID', os.getuid()))
+            gid = int(os.environ.get('SUDO_GID', os.getgid()))
+            
+            # Change ownership
+            os.chown('sbom.json', uid, gid)
+            
+            # Set permissions to rwxrwxrwx (777)
+            os.chmod('sbom.json', 0o777)
+            
+            print("Changed ownership and permissions for sbom.json")
+        else:
+            print("    sbom.json File is not owned by root, no changes needed")
+    else:
+        print("    sbom.json not found")
+
 
 def run_grype_scan(sbom_file, output_file):
     """Run Grype scan on SBOM and generate CSV report"""
@@ -658,6 +697,7 @@ def main():
     
     grype_csv = 'vuln-report-raw.csv'
     vex_csv = 'vex-report.csv'
+
     
     if not run_grype_scan(sbom_file, grype_csv):
         sys.exit(1)
