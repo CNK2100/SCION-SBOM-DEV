@@ -10,11 +10,21 @@ import sys
 import os
 from datetime import datetime
 import math
+import shutil
+
 global component_count
-component_count = 0  # on Ubuntu 22 after SBOM generation  component_count  is about  272525  
+global sbom
+global vuln
+global fixed
+global affected
+component_count = 0 
+vuln = 0
+fixed = 0
+affected = 0
+sbom = 0
 
 def generate_sbom(target="/"):
-    """Module 1: Generate SBOM using Syft"""
+    """  Module 1: Generate SBOM using Syft"""
     global component_count
     print("SBOM Gen...")
     # print("───────────────────────────────────────────────────────────────────────")
@@ -35,7 +45,8 @@ def generate_sbom(target="/"):
     
     print("Generating SBOM of target...")
     # print(f"  Running: syft {target} -o cyclonedx-json")
-    print("  (This may take 5-10 minutes...)")
+    print("  (This may take 2-10 minutes...)")
+    print()
     
     # Run Syft
     cmd = ["syft", target, "-o", "cyclonedx-json", "-q"]
@@ -88,8 +99,8 @@ def run_grype_scan(sbom_file, output_file):
     
     # Run Grype
     print()
-    print("  Scanning...")
-    print("     (This may take 5-10 minutes...)")
+    print("  Scanning... This may take 2-10 minutes...")
+    # print("     (This may take 5-10 minutes...)")
     cmd = ["grype", f"sbom:{sbom_file}", "-o", "json", "-q"]
     
     try:
@@ -97,12 +108,12 @@ def run_grype_scan(sbom_file, output_file):
         grype_data = json.loads(result.stdout)
         
         # Write intermediate JSON
-        with open("grype-report.json", "w") as f:
+        with open("vuln-complete-report.json", "w") as f:
             json.dump(grype_data, f, indent=2)
         
         # Convert to CSV
         convert_grype_to_csv(grype_data, output_file)
-        print(f"    Vulnerability scan complete: {output_file}")
+        print(f"      Vulnerability scan complete: {output_file}")
         return True
         
     except subprocess.CalledProcessError as e:
@@ -141,7 +152,8 @@ def convert_grype_to_csv(grype_data, csv_file):
                 
                 writer.writerow([name, version, fixed_in, pkg_type, vuln_id, severity, url])
     
-    print(f"    Vulnerability report conversion JSON to CSV format: {csv_file}")
+    # print(f"    Vulnerability report conversion JSON to CSV format: {csv_file}")
+    print(f"      Vulnerability report converted  to csv format")
 
 def process_vex(grype_csv, vex_csv):
     """Process Grype CSV through VEX analysis"""
@@ -158,7 +170,7 @@ def process_vex(grype_csv, vex_csv):
             count += 1
             # if count % 100 == 0:
             if count % 10000 == 0:
-                print(f"    Processed: {count} vulnerabilities")
+                print(f"        Processed: {count} vulnerabilities")
             
             # Extract fields
             name = row['Name']
@@ -205,6 +217,7 @@ def process_vex(grype_csv, vex_csv):
     
     print()
     print(f"  VEX analysis complete: {count} vulnerabilities processed")
+    vuln = count
     print(f"  VEX report: {vex_csv}")
     return True
 
@@ -271,6 +284,11 @@ def generate_action(vex_status, severity, fixed_in):
     return "Review and assess impact; monitor for patches"
 
 def calculate_security_score(vex_csv):
+    global sbom
+    global vuln
+    global fixed
+    global affected
+    
 	
     """Calculate security score from VEX report"""
     global component_count
@@ -347,9 +365,11 @@ def calculate_security_score(vex_csv):
         grade, risk_level = 'F', 'CRITICAL'
     
     # Create report
+    # 'overall_score': score,
+    # 'grade': grade,
+    # 'weighted_risk': round(weighted_risk, 2),
     report = {
-        'overall_score': score,
-        'grade': grade,
+
         'risk_level': risk_level,
         'sbom components found': component_count,
         'total_vulnerabilities': total_vulns,
@@ -363,7 +383,7 @@ def calculate_security_score(vex_csv):
         'affected_count': counts['affected'],
         'under_investigation_count': counts['under_investigation'],
         'average_cvss': round(avg_cvss, 2),
-        'weighted_risk': round(weighted_risk, 2),
+        
         'timestamp': datetime.now().isoformat(),
         'report_file': vex_csv
     }
@@ -372,13 +392,26 @@ def calculate_security_score(vex_csv):
     with open('security-score.json', 'w') as f:
         json.dump(report, f, indent=2)
     
+    # add to scion staticInfoConfig.json variable
+    sbom = component_count
+    vuln = total_vulns
+    fixed = counts['fixed']
+    affected = counts['affected']
+
+    # print(f"SBOM: {sbom} components ")
+    # print(f"Vulnerabilities: {vuln} found ")
+    # print(f"Fixed Vulnerabilities: {fixed} ")
+    # print(f"Affected Vulnerabilities: {affected}  ")
+
+    
     # Write text report
+    # [*] OVERALL SECURITY SCORE: {score}/100
+    # [*] SECURITY GRADE: {grade}
+    # [*]  Weighted Risk Score: {weighted_risk:.2f}
     text_report = f"""╔═══════════════════════════════════════════════════════════════════════╗
 ║                     RBOM SECURITY SCORE REPORT                        ║
 ╚═══════════════════════════════════════════════════════════════════════╝
 
-[*] OVERALL SECURITY SCORE: {score}/100
-[*] SECURITY GRADE: {grade}
 [*] RISK LEVEL: {risk_level}
 
 [*] SBOM components found: {component_count}
@@ -392,12 +425,12 @@ def calculate_security_score(vex_csv):
 
 [*] VEX Status Analysis:
   ✅ Fixed: {counts['fixed']} ({counts['fixed']/total_vulns*100:.1f}%)
-  ⚠️  Affected: {counts['affected']} ({counts['affected']/total_vulns*100:.1f}%)
+  ⚠️ Affected: {counts['affected']} ({counts['affected']/total_vulns*100:.1f}%)
   🔍 Under Investigation: {counts['under_investigation']} ({counts['under_investigation']/total_vulns*100:.1f}%)
 
 [*]  Average CVSS Score: {avg_cvss:.2f}/10.0
-[*]  Weighted Risk Score: {weighted_risk:.2f}
-[*] Scan Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+[*]  Scan Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 Report Files:
   - VEX Report: {vex_csv}
@@ -446,10 +479,111 @@ def generate_scion_config(score_file):
     	print()
         # print(f"  Score meets requirements")
     else:
-        print(f"    WARNING: Score below minimum threshold!")
+        print(f"      WARNING: Score below minimum threshold!")
     
-    print(f"    SCION config: scion-config.json\n")
+    print(f"      SCION config: scion-config.json\n")
     return True
+
+def generate_scion_staticInfoConfig():
+    global component_count
+    global sbom
+    global vuln
+    global fixed
+    global affected
+    
+    print("  [*] Generating SCION RBOM network configuration...")
+
+    # Define the JSON data
+    data = {
+        "Latency": {
+            "1": {
+                "Inter": "30ms",
+                "Intra": {
+                    "1": "100000h",
+                    "2": "10ms"
+                }
+            },
+            "2": {
+                "Inter": "40ms"
+            }
+        },
+        "CarbonIntensity": {
+            "1": {
+                "Inter": 780,
+                "Intra": {
+                    "2": 300
+                }
+            },
+            "2": {
+                "Inter": 400
+            }
+        },
+        "Sbom": {
+            "1": {
+                "Inter": sbom,
+                "Intra": {
+                    "2": sbom
+                }
+            },
+            "2": {
+                "Inter": sbom
+            }
+        },
+        "Vuln": {
+            "1": {
+                "Inter": vuln,
+                "Intra": {
+                    "2": vuln
+                }
+            },
+            "2": {
+                "Inter": vuln
+            }
+        },
+        "Fixed": {
+            "1": {
+                "Inter": fixed,
+                "Intra": {
+                    "2": fixed
+                }
+            },
+            "2": {
+                "Inter": fixed
+            }
+        },
+        "Affected": {
+            "1": {
+                "Inter": affected,
+                "Intra": {
+                    "2": affected
+                }
+            },
+            "2": {
+                "Inter": affected
+            }
+        },
+        "Hops": {
+            "1": {
+                "Intra": {
+                    "2": 2
+                }
+            }
+        },
+        "Note": "asdf"
+    }
+
+    # Create the file
+    with open('staticInfoConfig.json', 'w') as f:
+        json.dump(data, f, indent=2)
+
+    print("  [*] Created staticInfoConfig.json")
+
+    # Change directory and copy
+    os.chdir('..')
+    shutil.copy('./sbom-gen/staticInfoConfig.json', './scion-sbom/gen/ASff00_0_110/')
+
+    print("  [*] Copied staticInfoConfig to ./scion-sbom/gen/ASff00_0_110/")
+
 
 def main():
     print("╔═══════════════════════════════════════════════════════════════════════╗")
@@ -485,7 +619,7 @@ def main():
             print()
             
             print("=" * 71)
-            print("MODULE 1: SBOM Generation")
+            print("  MODULE 1: SBOM Generation")
             print("=" * 71)
             print()
             
@@ -504,7 +638,7 @@ def main():
         print()
         
         print("=" * 71)
-        print("MODULE 1: SBOM Generation")
+        print("  MODULE 1: SBOM Generation")
         print("=" * 71)
         print()
         
@@ -513,7 +647,7 @@ def main():
     
     # Module 2: Grype Scan + VEX
     print("=" * 71)
-    print("MODULE 2: Vulnerability Scanning + VEX Analysis")
+    print("  MODULE 2: Vulnerability Scanning + VEX Analysis")
     print("=" * 71)
     print()
     
@@ -529,7 +663,7 @@ def main():
     # Module 3: Security Score
     print()
     print("=" * 71)
-    print("MODULE 3: Security Score Calculation")
+    print("  MODULE 3: Security Score Calculation")
     print("=" * 71)
     print()
     
@@ -538,11 +672,14 @@ def main():
     
     # Module 4: SCION
     print("=" * 71)
-    print("MODULE 4: SCION Network Integration")
+    print("  MODULE 4: SCION Network Integration")
     print("=" * 71)
     print()
     
-    if not generate_scion_config('security-score.json'):
+    # if not generate_scion_config('security-score.json'):
+    #     sys.exit(1)
+
+    if not generate_scion_staticInfoConfig():
         sys.exit(1)
     
     # Summary
