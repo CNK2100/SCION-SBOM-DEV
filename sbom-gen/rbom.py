@@ -65,18 +65,7 @@ def generate_sbom(target="/"):
         print(f"  SBOM generated: sbom.json")
         print(f"  Components found: {component_count}")
         print()
-        changefilepermission()
-        # # Get the actual user's ID (not root's) when running with sudo
-        # uid = int(os.environ.get('SUDO_UID', os.getuid()))
-        # gid = int(os.environ.get('SUDO_GID', os.getgid()))
-
-        # # Change ownership to current user
-        # os.chown('sbom.json', uid, gid)
-
-        # Set permissions to rwxrwxrwx (777)
-        # os.chmod('sbom.json', 0o777)
-
-        # print(f"Changed ownership and permissions for sbom.json")
+        # changefilepermission()
         return True
         
     except subprocess.CalledProcessError as e:
@@ -95,7 +84,7 @@ def changefilepermission():
         
         # Check if owned by root (UID 0)
         if stat_info.st_uid == 0:
-            print("    File is owned by root, changing permissions...")
+            # print("    File is owned by root, changing permissions...")
             
             # Get actual user's ID when running with sudo
             uid = int(os.environ.get('SUDO_UID', os.getuid()))
@@ -107,11 +96,13 @@ def changefilepermission():
             # Set permissions to rwxrwxrwx (777)
             os.chmod('sbom.json', 0o777)
             
-            print("Changed ownership and permissions for sbom.json")
+            # print("Changed ownership and permissions for sbom.json")
         else:
-            print("    sbom.json File is not owned by root, no changes needed")
+            pass
+            # print("    sbom.json File is not owned by root, no changes needed")
     else:
         print("    sbom.json not found")
+    return
 
 
 def run_grype_scan(sbom_file, output_file):
@@ -643,29 +634,29 @@ def main():
     
     if sbom_exists:
         # SBOM exists - ask user what to do
-        print(f" Found existing SBOM: {sbom_file}")
-        print("  Options:")
-        print("    1. Use existing SBOM (skip Module 1)")
-        print("    2. Regenerate SBOM (run Module 1)")
+        print(f"  [*] Found existing SBOM: {sbom_file}")
+        print("    Options:")
+        print("      1. Use existing SBOM (skip Module 1)")
+        print("      2. Regenerate SBOM (run Module 1)")
         print()
         
         while True:
-            choice = input("  Select option (1 or 2): ").strip()
+            choice = input("  [*] Select option (1 or 2): ").strip()
             if choice in ['1', '2']:
                 break
             print("  Invalid choice. Please enter 1 or 2.")
         
         if choice == '2':
             print()
-            target = input("  Enter target directory (Press Enter for default: /): ").strip()
+            target = input("  [*] Enter target directory (Press Enter for default: /): ").strip()
             if not target:
                 target = "/"
             print()
             
-            print("=" * 71)
-            print("  MODULE 1: SBOM Generation")
-            print("=" * 71)
-            print()
+            # print("=" * 71)
+            # print("  MODULE 1: SBOM Generation")
+            # print("=" * 71)
+            # print()
             
             if not generate_sbom(target):
                 sys.exit(1)
