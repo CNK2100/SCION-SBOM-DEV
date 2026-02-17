@@ -324,7 +324,7 @@ make test
 
 # Optional make test-integration. 
 # May get error due to the low-speed downloading of "OpenWrt".
-# Just move to the Running  SCION-SBOM Section.
+# Just move to the Running  SCION-RBOM Section.
 
 make test-integration
 ```
