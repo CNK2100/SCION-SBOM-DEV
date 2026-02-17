@@ -350,8 +350,10 @@ Then run again make docker-images
 ./scion.sh topology -c topology/tiny4.topo
 ```
 ### Adding StaticInfoConfig to ASes.
-The "staticInfoConfig.json" will be updated automatically after collecting SBOM & VEX info.
-https://docs.scion.org/en/latest/manuals/control.html#control-conf-path-metadata 
+The "staticInfoConfig.json" will be updated automatically after collecting SBOM & VEX info using RBOM python program.
+
+For more details about StaticInfoConfig read [here](https://docs.scion.org/en/latest/manuals/control.html#control-conf-path-metadata).
+
 ```
 cd ..
 cp ./sbom-gen/staticInfoConfig.json ./scion-sbom/gen/ASff00_0_110/
