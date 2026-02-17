@@ -357,6 +357,7 @@ For more details about StaticInfoConfig read [here](https://docs.scion.org/en/la
 ```
 cd ..
 cp ./sbom-gen/staticInfoConfig.json ./scion-sbom/gen/ASff00_0_110/
+cd scion-sbom
 ```
 ### Start SCION
 ```
