@@ -55,14 +55,11 @@ updatedb
 
 sudo apt-get install -y graphviz python3-graphviz
 sudo apt install python3-pip
-
 pip install pyyaml toml plumbum
 
 sudo apt-get install -y libsqlite3-dev gcc
 
-sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r)
-sudo apt-get install -y linux-headers-$(uname -r) clang llvm libbpf-dev libelf-dev
-
+sudo apt install -y clang llvm libbpf-dev linux-headers-$(uname -r) libelf-dev
 sudo apt install -y linux-tools-common linux-tools-$(uname -r)
 bpftool version
 
