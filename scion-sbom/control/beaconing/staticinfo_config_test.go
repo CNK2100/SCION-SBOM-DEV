@@ -54,6 +54,27 @@ const (
 	carbon_intensity_inter_1   uint64 = 780
 	carbon_intensity_inter_2   uint64 = 400
 
+	Sbom_intra_1_2 uint64 = 545050
+	Sbom_inter_1 uint64 = 545050
+	Sbom_inter_2 uint64 = 545050
+
+
+	Vuln_intra_1_2 uint64 = 77026
+	Vuln_inter_1 uint64 = 77026
+	Vuln_inter_2 uint64 = 77026
+
+	Fixed_intra_1_2 uint64 = 41978
+	Fixed_inter_1 uint64 = 41978
+	Fixed_inter_2 uint64 = 41978
+
+	Affected_intra_1_2 uint64 = 34977
+	Affected_inter_1 uint64 = 34977
+	Affected_inter_2 uint64 = 34977
+
+	
+
+
+
 	link_type_1 staticinfo.LinkType = staticinfo.LinkTypeDirect
 	link_type_2 staticinfo.LinkType = staticinfo.LinkTypeOpennet
 	link_type_3 staticinfo.LinkType = staticinfo.LinkTypeMultihop
@@ -181,6 +202,62 @@ func getTestConfigData() *beaconing.StaticInfoCfg {
 				},
 			},
 		},
+		Sbom: map[common.IFIDType]beaconing.InterfaceSboms{
+			1: {
+				Inter: Sbom_inter_1,
+				Intra: map[common.IFIDType]uint64{
+					2: Sbom_intra_1_2,
+				},
+			},
+			2: {
+				Inter: Sbom_inter_2,
+				Intra: map[common.IFIDType]uint64{
+					1: Sbom_intra_1_2,
+				},
+			},
+		},
+		Vuln: map[common.IFIDType]beaconing.InterfaceVulns{
+			1: {
+				Inter: Vuln_inter_1,
+				Intra: map[common.IFIDType]uint64{
+					2: Vuln_intra_1_2,
+				},
+			},
+			2: {
+				Inter: Vuln_inter_2,
+				Intra: map[common.IFIDType]uint64{
+					1: Vuln_intra_1_2,
+				},
+			},
+		},
+		Fixed: map[common.IFIDType]beaconing.InterfaceFixeds{
+			1: {
+				Inter: Fixed_inter_1,
+				Intra: map[common.IFIDType]uint64{
+					2: Fixed_intra_1_2,
+				},
+			},
+			2: {
+				Inter: Fixed_inter_2,
+				Intra: map[common.IFIDType]uint64{
+					1: Fixed_intra_1_2,
+				},
+			},
+		},
+		Affected: map[common.IFIDType]beaconing.InterfaceAffecteds{
+			1: {
+				Inter: Affected_inter_1,
+				Intra: map[common.IFIDType]uint64{
+					2: Affected_intra_1_2,
+				},
+			},
+			2: {
+				Inter: Affected_inter_2,
+				Intra: map[common.IFIDType]uint64{
+					1: Affected_intra_1_2,
+				},
+			},
+		},
 		LinkType: map[common.IFIDType]beaconing.LinkType{
 			1: beaconing.LinkType(link_type_1),
 			2: beaconing.LinkType(link_type_2),
@@ -296,15 +373,47 @@ func TestGenerateStaticInfo(t *testing.T) {
 						1: carbon_intensity_inter_1,
 					},
 				},
-				Geo: staticinfo.GeoInfo{
-					1: geo_1,
-					3: geo_3,
-					5: geo_5,
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{
+						2: Sbom_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						1: Sbom_inter_1,
+					},
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{
+						2: Vuln_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						1: Vuln_inter_1,
+					},
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{
+						2: Fixed_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						1: Fixed_inter_1,
+					},
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{
+						2: Affected_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						1: Affected_inter_1,
+					},
 				},
 				LinkType: staticinfo.LinkTypeInfo{
 					1: link_type_1,
 					5: link_type_5,
 				},
+				Geo: staticinfo.GeoInfo{
+            		1: geo_1,
+            		3: geo_3,
+            		5: geo_5,
+        		},
 				InternalHops: map[common.IFIDType]uint32{
 					2: hops_intra_1_2,
 					3: hops_intra_1_3,
@@ -345,6 +454,30 @@ func TestGenerateStaticInfo(t *testing.T) {
 						2: carbon_intensity_inter_2,
 					},
 				},
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						2: Sbom_inter_2,
+					},
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						2: Vuln_inter_2,
+					},
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						2: Fixed_inter_2,
+					},
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						2: Affected_inter_2,
+					},
+				},
 				Geo: staticinfo.GeoInfo{
 					2: geo_2,
 					3: geo_3,
@@ -382,6 +515,30 @@ func TestGenerateStaticInfo(t *testing.T) {
 				CarbonIntensity: staticinfo.CarbonIntensityInfo{
 					Intra: map[common.IFIDType]uint64{},
 					Inter: map[common.IFIDType]uint64{},
+				},
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{},
+					// Intra: nil,
+					// Inter: nil,
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{},
+					// Intra: nil,
+					// Inter: nil,
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{},
+					// Intra: nil,
+					// Inter: nil,
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{},
+					// Intra: nil,
+					// Inter: nil,
 				},
 				Geo: staticinfo.GeoInfo{
 					3: geo_3,
@@ -428,6 +585,38 @@ func TestGenerateStaticInfo(t *testing.T) {
 						1: carbon_intensity_inter_1,
 					},
 				},
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{
+						2: Sbom_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						1: Sbom_inter_1,
+					},
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{
+						2: Vuln_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						1: Vuln_inter_1,
+					},
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{
+						2: Fixed_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						1: Fixed_inter_1,
+					},
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{
+						2: Affected_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						1: Affected_inter_1,
+					},
+				},
 				Geo: staticinfo.GeoInfo{
 					1: geo_1,
 					5: geo_5,
@@ -471,6 +660,30 @@ func TestGenerateStaticInfo(t *testing.T) {
 					Intra: map[common.IFIDType]uint64{},
 					Inter: map[common.IFIDType]uint64{
 						2: carbon_intensity_inter_2,
+					},
+				},
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						2: Sbom_inter_2,
+					},
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						2: Vuln_inter_2,
+					},
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						2: Fixed_inter_2,
+					},
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						2: Affected_inter_2,
 					},
 				},
 				Geo: staticinfo.GeoInfo{
@@ -521,6 +734,38 @@ func TestGenerateStaticInfo(t *testing.T) {
 						2: carbon_intensity_inter_2,
 					},
 				},
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{
+						1: Sbom_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						2: Sbom_inter_2,
+					},
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{
+						1: Vuln_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						2: Vuln_inter_2,
+					},
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{
+						1: Fixed_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						2: Fixed_inter_2,
+					},
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{
+						1: Affected_intra_1_2,
+					},
+					Inter: map[common.IFIDType]uint64{
+						2: Affected_inter_2,
+					},
+				},
 				Geo: staticinfo.GeoInfo{
 					2: geo_2,
 				},
@@ -557,6 +802,30 @@ func TestGenerateStaticInfo(t *testing.T) {
 					Intra: map[common.IFIDType]uint64{},
 					Inter: map[common.IFIDType]uint64{
 						1: carbon_intensity_inter_1,
+					},
+				},
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						1: Sbom_inter_1,
+					},
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						1: Vuln_inter_1,
+					},
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						1: Fixed_inter_1,
+					},
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						1: Affected_inter_1,
 					},
 				},
 				Geo: staticinfo.GeoInfo{
@@ -597,6 +866,30 @@ func TestGenerateStaticInfo(t *testing.T) {
 						1: carbon_intensity_inter_1,
 					},
 				},
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						1: Sbom_inter_1,
+					},
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						1: Vuln_inter_1,
+					},
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						1: Fixed_inter_1,
+					},
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{
+						1: Affected_inter_1,
+					},
+				},
 				Geo: staticinfo.GeoInfo{
 					1: geo_1,
 					3: geo_3,
@@ -627,6 +920,30 @@ func TestGenerateStaticInfo(t *testing.T) {
 				CarbonIntensity: staticinfo.CarbonIntensityInfo{
 					Intra: map[common.IFIDType]uint64{},
 					Inter: map[common.IFIDType]uint64{},
+				},
+				Sbom: staticinfo.SbomInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{},
+					// Intra: nil,
+					// Inter: nil,
+				},
+				Vuln: staticinfo.VulnInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{},
+					// Intra: nil,
+					// Inter: nil,
+				},
+				Fixed: staticinfo.FixedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{},
+					// Intra: nil,
+					// Inter: nil,
+				},
+				Affected: staticinfo.AffectedInfo{
+					Intra: map[common.IFIDType]uint64{},
+					Inter: map[common.IFIDType]uint64{},
+					// Intra: nil,
+					// Inter: nil,
 				},
 				Geo: staticinfo.GeoInfo{
 					3: geo_3,
