@@ -318,6 +318,10 @@ make
 make protobuf   
 
 make test
+# if you get serrors, run below and make test again
+$(bazel info output_base)/external/go_sdk/bin/go test ./pkg/private/serrors/... -update
+make test
+
 
 # Optional make test-integration. 
 # May get error due to the low-speed downloading of "OpenWrt".
