@@ -384,17 +384,18 @@ Available paths to 1-ff00:0:110
     MTU: 1400
     NextHop: 127.0.0.25:31012
     PQC-secured: true
-    Expires: 2026-02-11 13:46:46 +0000 UTC (5h56m29s)
+    Expires: 2026-02-24 11:54:13 +0000 UTC (5h59m41s)
     Latency: 40ms
     CarbonIntensity: 400gCO2/TB
-    Sbom: 545050
-    Vuln: 77026
-    Fixed: 41978
-    Affected: 34977
+    Sbom: 455725
+    Vuln: 39576
+    Fixed: 27173
+    Affected: 12326
     Notes: [1-ff00:0:110: "asdf"]
     SupportsEPIC: false
     Status: alive
     LocalIP: 127.0.0.1
+
 ```
 
 Testing the path from 112 to another AS 1-ff00:0:111 with different.
