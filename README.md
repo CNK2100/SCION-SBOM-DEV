@@ -324,7 +324,7 @@ make test
 
 
 # Optional make test-integration. 
-# May get error due to the low-speed downloading of "OpenWrt".
+# May get error due to the low-speed downloading "@openwrt_x86_64_SDK".
 # Just move to the Running  SCION-RBOM Section.
 
 make test-integration
