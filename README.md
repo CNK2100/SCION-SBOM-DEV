@@ -409,13 +409,13 @@ Available paths to 1-ff00:0:111
     MTU: 1280
     NextHop: 127.0.0.25:31012
     PQC-secured: true
-    Expires: 2026-02-11 13:46:46 +0000 UTC (5h56m16s)
+    Expires: 2026-02-24 12:20:33 +0000 UTC (5h56m32s)
     Latency: 80ms
     CarbonIntensity: 1480gCO2/TB
-    Sbom: 1635150
-    Vuln: 231078
-    Fixed: 125934
-    Affected: 104931
+    Sbom: 1367175
+    Vuln: 118728
+    Fixed: 81519
+    Affected: 36978
     InternalHops: [1-ff00:0:110: 2]
     Notes: [1-ff00:0:110: "asdf"]
     SupportsEPIC: false
