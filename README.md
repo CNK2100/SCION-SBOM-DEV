@@ -471,7 +471,7 @@ Any needed attribute could be included in SCION AS information (e.g., SBOM as of
 
 ## About
 
-This repository is maintained by Dr. Carlos. For reporting bugs, you can submit an issue to the GitHub repository.
+For reporting bugs, you can submit an issue to the GitHub repository.
 
 
 
